@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/list_colors_from_files_btn"
+        android:text="전체 이미지 색상 리스트 뽑기"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_margin="@dimen/view_margin_spacing"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/preview_img"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+
+            android:layout_gravity="center_horizontal"
+
+            android:layout_height="100dp"/>
+        <ImageView
+            android:layout_marginStart="@dimen/view_margin_spacing"
+            android:id="@+id/cropped_preview_img"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
+
+            android:layout_height="100dp"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/pick_img_btn"
+        android:layout_gravity="center_horizontal"
+        android:text="pick img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/view_margin_spacing"
+        android:layout_marginBottom="@dimen/view_spacing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:gravity="center"
+            android:text="Dominant Color : "
+            android:id="@+id/dominant_color_txt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <TextView
+            android:gravity="center"
+            android:text="Closest Color : "
+            android:id="@+id/closest_color_txt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+
+        android:weightSum="2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <View
+            android:id="@+id/dominant_color_view"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+        <View
+            android:layout_marginStart="@dimen/view_spacing"
+            android:id="@+id/closest_color_view"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/result_color_txt"
+        android:text="Color"
+        android:textColor="@color/black"
+        android:layout_marginTop="32dp"
+        android:textSize="40sp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

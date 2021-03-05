@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "764281423525",
+    "project_id": "ddoyac",
+    "storage_bucket": "ddoyac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764281423525:android:3203eeab463ac49f48af4c",
+        "android_client_info": {
+          "package_name": "com.nexysquare.ddoyac"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "764281423525-t443u0u2tc5l0bv1sdee53qo35unv6h3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9WIZwgw0g65nKRqPi5v0wNaQZuvyU3DA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "764281423525-t443u0u2tc5l0bv1sdee53qo35unv6h3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

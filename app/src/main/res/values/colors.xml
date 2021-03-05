@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+
+    <color name="yak_pri">#141926</color>
+    <color name="yak_ariant">#252D40</color>
+    <color name="yak_sec">#28BBF5</color>
+
+    <color name="app_basic_bg">#f4f4f4</color>
+    <color name="capture_fill">#00F4F4F4</color>
+    <color name="capture_stroke_active">#FF03DAC5</color>
+    <color name="capture_stroke_inactive">#009688</color>
+
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="bright_gray">#efefef</color>
+
+    <color name="gray">#ddd</color>
+    <color name="clear_gray">#b9b9b9</color>
+    <color name="darker_gray">#434343</color>
+    <!-- Text color of the search box text as entered by user  -->
+    <color name="searchbox_text_color">#000000</color>
+    <!-- Background color of the search box -->
+    <color name="searchbox_background_color">#ffffff</color>
+    <!-- Text color of the search box hint text  -->
+    <color name="searchbox_hint_text_color">#a4a4a4</color>
+    <color name="searchbox_icon_tint">#a4a4a4</color>
+    <color name="search_shortcut_background_color">#b6b6b6</color>
+    <color name="search_shortcut_icon_color">#f8f8f8</color>
+
+    <color name="default_color_expanded">#F0F0F0</color>
+
+    <color name="confirm_test">#37000000</color>
+
+    <color name="d_red">#d73522</color>
+    <color name="d_orange">#ea9b39</color>
+    <color name="d_brown">#5d2c16</color>
+    <color name="d_yellow">#fdea54</color>
+    <color name="d_yellow_green">#aece3a</color>
+    <color name="d_green">#3a844a</color>
+    <color name="d_blue">#3d98f1</color>
+    <color name="d_pink">#e7b5dc</color>
+    <color name="d_violet">#9c2258</color>
+    <color name="d_purple">#3c1381</color>
+    <color name="d_blue_green">#3d8ea1</color>
+    <color name="d_dark_blue">#133487</color>
+    <color name="d_gray">#7C7C7C</color>
+    <color name="d_black">#434343</color>
+    <color name="d_white">#f4f4f4</color>
+    <color name="d_trans">#6AF4F4F4</color>
+
+
+<!--    "#d73522",-->
+<!--    "#ea9b39",-->
+<!--    "#5d2c16",-->
+<!--    "#fdea54",-->
+<!--    "#aece3a",-->
+<!--    "#3a844a",-->
+<!--    "#3d98f1",-->
+<!--    "#e7b5dc",-->
+<!--    "#9c2258",-->
+<!--    "#3c1381",-->
+<!--    "#3d8ea1",-->
+<!--    "#133487",-->
+<!--    "#cad1cd",-->
+<!--    "#000000",-->
+<!--    "#f4f4f4",-->
+<!--    "#3b3b3b",-->
+<!--    "#f1f1f1",-->
+<!--    "#ffffff"-->
+<!--    "빨강",-->
+<!--    "주황",-->
+<!--    "갈색",-->
+<!--    "노랑",-->
+<!--    "연두",-->
+<!--    "초록",-->
+<!--    "파랑",-->
+<!--    "분홍",-->
+<!--    "자주",-->
+<!--    "보라",-->
+<!--    "청록",-->
+<!--    "남색",-->
+<!--    "회색",-->
+<!--    "검정",-->
+<!--    "옅은",-->
+<!--    "진한",-->
+<!--    "하양",-->
+<!--    "투명"-->
+
+</resources>

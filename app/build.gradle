@@ -1,0 +1,97 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.nexysquare.ddoyac"
+        minSdkVersion 24
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation ('com.github.bumptech.glide:okhttp3-integration:4.9.0'){
+        exclude group: 'glide-parent'
+    }
+    implementation 'com.github.yalantis:ucrop:2.2.6-native'
+    implementation 'androidx.palette:palette:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.github.salehyarahmadi:FileAndFolderPicker:1.0.4'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.tensorflow:tensorflow-lite:2.4.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.4.0'
+    implementation 'com.github.faruktoptas:FancyShowCaseView:1.3.5'
+    implementation project(path: ':sdk')
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'androidx.preference:preference:1.1.0'
+
+    implementation 'com.opencsv:opencsv:4.6'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.7.2'
+
+    implementation 'com.github.smart-fun:XmlToJson:1.4.5'    // add this line
+    implementation "com.squareup.retrofit2:converter-simplexml:2.7.2"
+
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
+
+    // ML Kit dependencies
+    implementation platform('com.google.firebase:firebase-bom:26.5.0')
+    implementation 'com.google.firebase:firebase-ml-vision'
+
+    /** CameraX */
+    def camerax_version = "1.0.0-beta07"
+    // CameraX core library using camera2 implementation
+    implementation "androidx.camera:camera-core:1.0.0-beta05"
+
+    implementation "androidx.camera:camera-camera2:$camerax_version"
+    // CameraX Lifecycle Library
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+    // CameraX View class
+    implementation "androidx.camera:camera-view:1.0.0-alpha14"
+}
+apply plugin: 'realm-android'

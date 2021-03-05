@@ -1,0 +1,82 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nexysquare.ddoyac.activity.SimilarityTestActivity" >
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:text="@string/select" />
+
+
+
+    <LinearLayout
+        android:id="@+id/imgs_view"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/img1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button1"
+            android:layout_below="@+id/tv"
+            android:layout_margin="5dp"
+            android:layout_toLeftOf="@+id/emptyLayout"
+            android:src="@mipmap/ic_launcher"
+            />
+
+
+        <ImageView
+            android:id="@+id/img2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button1"
+            android:layout_below="@+id/tv"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_toRightOf="@+id/emptyLayout"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:text=""
+        android:id="@+id/descriptor_txt"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/imgs_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="@string/start" />
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="descriptor performance test" />
+
+    </LinearLayout>
+</RelativeLayout>

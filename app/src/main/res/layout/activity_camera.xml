@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.FitWindowsFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <FrameLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="top"
+            android:background="#212121">
+
+            <SeekBar
+                android:id="@+id/zoomSeekBar"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:progress="0"
+                android:progressBackgroundTint="@color/white"
+                android:visibility="visible"
+                android:max="100"/>
+
+
+            <ImageView
+                android:id="@+id/switchCamera"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="8dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/custom_ripple_black"
+                android:padding="12dp"
+                android:src="@drawable/ic_baseline_flip_camera_ios_24"
+                android:visibility="visible" />
+
+            <!--            <ImageView-->
+            <!--                android:id="@+id/done"-->
+            <!--                android:layout_width="44dp"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:layout_marginHorizontal="18dp"-->
+            <!--                android:layout_marginVertical="8dp"-->
+            <!--                android:background="@drawable/custom_ripple_black"-->
+            <!--                android:padding="6dp"-->
+            <!--                android:layout_gravity="end"-->
+            <!--                android:src="@drawable/ic_baseline_done_24"-->
+            <!--                android:visibility="visible"-->
+            <!--                app:tint="@color/colorAccent" />-->
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_zoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="44dp"
+            android:text="0%"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+        <!--        <io.fotoapparat.view.CameraView-->
+        <!--            android:id="@+id/cameraView"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:visibility="visible"-->
+        <!--            android:layout_below="@+id/header"-->
+        <!--            android:layout_above="@+id/footer"-->
+        <!--            android:background="#000"-->
+        <!--            tools:visibility="visible">-->
+
+        <!--            &lt;!&ndash;Optionally add tap to focus&ndash;&gt;-->
+        <!--            <io.fotoapparat.view.FocusView-->
+        <!--                android:id="@+id/focusView"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="match_parent" />-->
+
+        <!--        </io.fotoapparat.view.CameraView>-->
+
+        <FrameLayout
+            android:id="@+id/frame_layout"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/header"
+            android:layout_above="@+id/footer"
+            android:layout_height="600dp">
+
+            <androidx.camera.view.PreviewView
+                android:id="@+id/viewFinder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:background="#212121">
+
+            <ImageView
+                android:id="@+id/btn_flash"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:src="@drawable/ic_baseline_flash_auto_24"
+                android:layout_gravity="left|center_vertical"
+                android:padding="12dp"
+                android:layout_margin="20dp"
+                tools:ignore="RtlHardcoded" />
+
+            <ImageView
+                android:id="@+id/result"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_vertical|left"
+                android:layout_marginStart="10dp"
+                android:visibility="gone"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+            <ImageView
+                android:id="@+id/btn_capture"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:src="@drawable/capture"
+                tools:ignore="ContentDescription" />
+
+            <RelativeLayout
+                android:layout_width="80dp"
+                android:layout_height="90dp"
+                android:visibility="visible"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:layout_gravity="end|center_vertical">
+
+                <ImageView
+                    android:id="@+id/preview"
+                    android:layout_width="60dp"
+                    android:layout_height="70dp"
+                    android:layout_centerInParent="true"
+                    android:background="#565656"
+                    android:scaleType="centerCrop"
+                    tools:ignore="RtlHardcoded" />
+
+                <TextView
+                    android:id="@+id/count"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:text="3"
+                    android:visibility="gone"
+                    android:textColor="#fff"
+                    android:gravity="center"
+                    android:backgroundTint="@color/purple_700"
+                    android:background="@drawable/page_count_bg"
+                    android:layout_alignParentEnd="true" />
+
+
+            </RelativeLayout>
+        </FrameLayout>
+
+    </RelativeLayout>
+
+</androidx.appcompat.widget.FitWindowsFrameLayout>

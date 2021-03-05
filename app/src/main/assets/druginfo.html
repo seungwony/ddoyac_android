@@ -1,0 +1,761 @@
+<html><head><meta name='viewport' content='width=device-width, user-scalable=no'><base href=''><style>
+* { font-size :1.06em; line-height: 1.6em; } body { padding:10px; }
+ul {
+	list-style: none;
+	padding:0px;
+	margin: 0px;
+}
+
+li{
+	margin-bottom: 15px;
+}
+
+.title{
+	   margin-bottom: 2px;
+	font-weight: 600;
+    color: #2196f3;
+}
+.content{
+	font-size: 0.9em;
+    margin-left: 5px;
+}
+
+li.doc-data .sub-title{
+	font-size: 0.8em;
+
+}
+li.doc-data .nb .sub-title{
+    margin: 5px;
+       font-size: 0.7em;
+    color: #f10;
+}
+li.doc-data .nb{
+
+	margin-bottom: 8px;
+}
+
+li.doc-data .ud .sub-title{
+    margin: 5px;
+       font-size: 0.7em;
+
+}
+li.doc-data .ud{
+
+	margin-bottom: 8px;
+}
+
+li.doc-data .sub-content{
+	    font-size: 0.7em;
+    line-height: 1.8;
+    margin-bottom: 2px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+li.doc-data .nb .sub-content{
+	    font-size: 0.6em;
+    line-height: 1.8;
+    margin-bottom: 2px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+table{
+	width:100%;
+	text-align:center;
+	border: solid 1px #ddd;
+    font-size: 0.7em;
+    margin-top: 8px;
+    border-radius: 3px;
+    border-collapse: collapse;
+}
+
+table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+        padding: 6px 0px;
+        background: #f4f4f4;
+}
+
+table.doc-table{
+	font-size: small;
+}
+
+table.doc-table > tbody > tr:nth-child(2n+1){
+	border-bottom: solid 1px;
+    background: #f9f9f9;
+}
+
+table.doc-table > tbody td{
+	border-bottom: solid 1px #f4f4f4;
+        padding: 0px 5px;
+	border-color: #f4f4f4!important;
+	background-color: initial!important;
+}
+
+table.doc-table > tbody td p {
+    margin: 8px 5px;
+    font-size: 0.9em;
+}
+
+table.doc-table table tbody td {
+	width: initial!important;
+    padding: 0px 0px;
+    border-bottom: solid 1px #ddd;
+
+
+}
+
+table thead td, table thead th {
+    border-bottom-width: 2px;
+}
+table thead.div3 th{
+	width: 33.3%;
+}
+
+table thead.div2 th{
+	width: 50%;
+}
+table tbody td{
+	padding: 5px 0px;
+}
+</style></head>
+<body>
+
+<div >
+	<ul id="drug-data">
+		<!-- <li>
+			<div class="title">업소</div>
+			<div class="content">영진약품(주)</div>				
+		</li>
+		<li>
+			<div class="title">효능</div>
+			<div class="content">동맥경화용제</div>				
+		</li>
+		<li>
+			<div class="title">성상</div>
+			<div class="content">흰색의타원형필름코팅정</div>				
+		</li>
+
+		<li>
+			<div class="title">사이즈(mm)</div>
+			<div class="content">
+				<table>
+					<thead>
+					  <tr>
+					    <th>장</th>
+					    <th>단</th>
+					    <th>두께</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr>
+					    <td>10.43</td>
+					    <td>4.3</td>
+					    <td>2.8</td>
+					  </tr>
+					</tbody>
+				</table>
+			</div>				
+		</li>
+
+		<li>
+			<div class="title">분할선</div>
+			<div class="content">
+				<table>
+					<thead>
+					  <tr>
+					    <th>앞</th>
+					    <th>뒤</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr>
+					    <td></td>
+					    <td>+</td>
+					  </tr>
+					</tbody>
+				</table>
+			</div>				
+		</li>
+
+				<li>
+			<div class="title">색깔</div>
+			<div class="content">
+				<table>
+					<thead>
+					  <tr>
+					    <th>앞</th>
+					    <th>뒤</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr>
+					    <td>노랑</td>
+					    <td>하양</td>
+					  </tr>
+					</tbody>
+				</table>
+			</div>				
+		</li> -->
+	</ul>
+	
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" charset="utf-8" async defer>
+
+	
+function saveHtml(code){
+  // UID = uid;
+  if(typeof Android !== "undefined" && Android !== null) {
+      Android.saveHtml(code);
+  } else {
+      alert("Not viewing in webview");
+  }
+
+}
+
+
+function exceptionJson(code){
+	if(typeof Android !== "undefined" && Android !== null) {
+      Android.exceptionJson(code);
+  } else {
+      alert("Not viewing in webview");
+  }
+}
+
+// }
+// function showJson(json_str){
+// 	var drug_data = document.getElementById('drug-data');
+// 	drug_data.innerHTML = json_str;
+// }
+
+
+function initExtend(extend){
+	// var drug_data = document.getElementById('drug-data');
+	// drug_data.innerHTML = json_str;
+	// initData(ori, extend);
+	var drug_data = document.getElementById('drug-data');
+	var storage_method = "";
+	var valid_term = "";
+
+
+	if(extend != undefined){
+		var extend_json = JSON.parse(extend);
+
+
+		valid_term = '<li><div class="title">유효기간</div><div class="content">'+extend_json.valid_term+'</div></li>';
+
+		storage_method = '<li><div class="title">저장방법</div><div class="content">'+extend_json.storage_method+'</div></li>';
+
+	}
+
+	drug_data.innerHTML = valid_term + storage_method;
+
+
+}
+function initDataWithExtendXml(ori, xml){
+
+	// exceptionJson(xml);
+	var drug_data = document.getElementById('drug-data');
+
+	var json = JSON.parse(ori);
+	// drug_data.innerHTML = json.p_no + " " + json.p_name;
+
+
+	var p_no = json.p_no;
+	var p_name = json.p_name;
+	
+	var c_no = json.c_no;
+	var c_name = json.c_name;
+	
+	var des = json.des;
+	var img = json.img;
+	var mark_front = json.mark_front;
+	var mark_back = json.mark_back;
+	var shape = json.shape;
+	var color_front = json.color_front;
+	var color_back = json.color_back;
+
+	var div_front = json.div_front;
+	var div_back = json.div_back;
+
+	var major_axis = json.major_axis;	
+	var minor_axis = json.minor_axis;	
+	var thickness = json.thickness;
+
+
+	var img_created = json.img_created;
+
+	var class_no = json.class_no;
+	var class_name = json.class_name;
+	var specialization = json.specialization;
+	var approval = json.approval;
+	var shape_code = json.shape_code;
+	var updated = json.updated;
+
+	var storage_method = "";
+	var valid_term = "";
+	var effect = "";
+
+	var main_item_ingr = "";
+	var ingr_name = "";
+
+	var nb_doc_data = "";
+	var ud_doc_data = "";
+
+
+	if(xml != undefined){
+
+		function doc_data(title, tag, tagName){
+
+				if(xmlDoc.getElementsByTagName(tagName).length < 1) return "";
+
+
+				var txt = '<li class="doc-data"> <div class="title">'+title+'</div>';
+			    
+			     var d_data = xmlDoc.getElementsByTagName(tagName)[0].childNodes;
+			     
+
+			     
+			     for (var i = 0; i < d_data.length ;i++) {
+			        
+
+								var articles = d_data[i].getElementsByTagName("ARTICLE");
+
+			                              
+			        for(var j = 0 ; j< articles.length ; j++){
+			        			       
+			        			 var sub_title = articles[j].attributes.getNamedItem("title").nodeValue; 		 
+			               // console.log(articles[j].attributes.getNamedItem("title").nodeValue);
+			        		 // console.log(articles[j].textContent);           
+			        		 txt += '<div class="'+tag+'"><div class="sub-title">'+sub_title+'</div>';
+
+			        		 var paragraps = articles[j].getElementsByTagName("PARAGRAPH");
+			             
+				             for(var k = 0 ; k < paragraps.length; k++){
+				             		// console.log(paragraps[k].textContent);
+				             		var tagName = paragraps[k].attributes.getNamedItem("tagName").nodeValue;
+                                                        
+
+
+				             		var paragrap = paragraps[k].textContent;
+				             		 if(tagName == 'table'){
+                                    	
+                                        txt += '<table class="doc-table">'+paragrap+'</table>';
+                                    
+                                    }else{
+                      		              txt += '<div class="sub-content ">'+paragrap+'</div>';
+                                    }
+				             		
+				             }
+
+
+				             txt += '</div>';
+
+				            
+			             
+			           }
+			          
+					
+
+			     }
+
+			     txt += '</li>'; 
+
+			     return txt;
+			}
+
+			function getTextByTagName(tagName){
+				var x = xmlDoc.getElementsByTagName(tagName);
+
+				if(x.length>0){
+			  	if(x[0].childNodes.length >0){
+			    	return x[0].childNodes[0].nodeValue;
+			    }
+			  }else{
+			  	return "";
+			  }
+			}
+
+		var parser = new DOMParser();
+		var xmlDoc = parser.parseFromString(xml,"text/xml");
+
+
+		//성상
+		var chart =getTextByTagName("CHART");
+
+	//표준코드
+	  var bar_code = getTextByTagName("BAR_CODE");
+	  
+	  //취하구분
+	  var cancel_name = getTextByTagName("CANCEL_NAME");
+	  
+	  //분류
+	  var class_no = getTextByTagName("CLASS_NO");
+	  
+	  //위탁제조업체
+	  var cnsgn_manuf = getTextByTagName("CNSGN_MANUF");
+	  
+	    //제조방법
+	  var doc_text = getTextByTagName("DOC_TEXT");
+	  
+	  //보험코드
+	  var edi_code = getTextByTagName("EDI_CODE");
+	  
+	    //효능효과 pdf
+	   var ee_doc_id = getTextByTagName("EE_DOC_ID");
+	  
+	  //업체명
+	  var entp_name = getTextByTagName("ENTP_NAME");
+	  
+	  //업체명
+	  var entp_no = getTextByTagName("ENTP_NO");
+	  
+	  //업체허가번호
+	  var etc_otc_code = getTextByTagName("ETC_OTC_CODE");
+	  
+	  //변경이력
+	  var gbn_name = getTextByTagName("GBN_NAME");
+	  
+	    //업종구분
+	  var induty_type = getTextByTagName("INDUTY_TYPE");
+	  
+	    //첨가제
+	  var induty_type = getTextByTagName("INGR_NAME");
+	  
+	  
+	    //첨부문서
+	  var insert_file = getTextByTagName("INSERT_FILE");
+	  
+	  
+	  //품목명
+	  var item_name = getTextByTagName("ITEM_NAME");
+	  
+	  //허가일자
+	  var item_permit_date = getTextByTagName("ITEM_PERMIT_DATE");
+	  
+	  //품목기준코드
+	  var item_seq = getTextByTagName("ITEM_SEQ");
+	  
+	  //유효성분
+	  var main_item_ingr = getTextByTagName("MAIN_ITEM_INGR");
+	  
+	  
+	  // 완제/원료구분
+	    var make_material_flag = getTextByTagName("MAKE_MATERIAL_FLAG");
+	  
+	  //원료성분
+	  var material_name = getTextByTagName("MATERIAL_NAME");
+	  
+	  
+	    //주의사항 pdf
+	  var nb_doc_id = getTextByTagName("NB_DOC_ID");
+	  
+	  
+	  // 신약
+	  var newdrug_class_name = getTextByTagName("NEWDRUG_CLASS_NAME");
+	  
+	  // 포장단위
+	  var pack_unit = getTextByTagName("PACK_UNIT");
+	  
+	  //허가/신고구분
+	    var permit_kind_name = getTextByTagName("PERMIT_KIND_NAME");
+	  
+	    var reexam_date = getTextByTagName("REEXAM_DATE");
+	  
+	  //저장방법
+	    var storage_method = getTextByTagName("STORAGE_METHOD"); 
+	    
+	//유효기간
+		var valid_term = getTextByTagName("VALID_TERM")
+	  
+	  
+	  
+	  
+	  // console.log("효능효과");
+	  //효능효과
+		effect = doc_data("효능·효과", "ee", "EE_DOC_DATA");
+	     
+
+	  // console.log("주의사항(일반) 문서 데이터");
+	  //주의사항(일반) 문서 데이터
+		 nb_doc_data = doc_data("사용상 주의사항", "nb", "NB_DOC_DATA");
+	  
+	  
+	    // console.log("용법 용량");
+	    //용법 용량
+		ud_doc_data = doc_data("용법·용량", "ud", "UD_DOC_DATA");	
+		
+
+
+
+		valid_term = '<li><div class="title">유효기간</div><div class="content">'+valid_term+'</div></li>';
+
+
+				storage_method = '<li><div class="title">저장방법</div><div class="content">'+storage_method+'</div></li>';
+
+
+				main_item_ingr = '<li><div class="title">완제/원료구분</div><div class="content">'+main_item_ingr+'</div></li>';
+
+				ingr_name = '<li><div class="title">첨가제</div><div class="content">'+ingr_name+'</div></li>';	
+
+
+
+	}
+
+
+     
+
+ 	var result = '';
+
+	var product = '<li><div class="title">품목</div><div class="content">'+p_name+'</div></li>';
+	
+
+	var company = '<li><div class="title">업소</div><div class="content">'+c_name+'</div></li>';
+
+
+
+	var class_name = '<li><div class="title">효능</div><div class="content">'+class_name+'</div></li>';
+
+
+	if(effect == ''){
+		effect = class_name;
+	}
+
+	var des = '<li><div class="title">성상</div><div class="content">'+des+'</div></li>';
+
+
+	var size = '<li><div class="title">사이즈(mm)</div><div class="content"><table><thead class="div3"><tr><th >장</th><th>단</th><th>두께</th></tr></thead><tbody><tr><td>'+major_axis+'</td><td>'+minor_axis+'</td><td>'+thickness+'</td></tr></tbody></table></div></li>';
+
+   
+	var div = '<li><div class="title">분할선</div><div class="content"><table><thead class="div2"><tr><th>앞</th><th>뒤</th></tr></thead><tbody><tr><td>'+div_front+'</td><td>'+div_back+'</td></tr></tbody></table></div></li>';
+
+
+	var color = '<li><div class="title">색깔</div><div class="content"><table><thead class="div2"><tr><th>앞</th><th>뒤</th></tr></thead><tbody><tr><td>'+color_front+'</td><td>'+color_back+'</td></tr></tbody></table></div></li>';
+
+	result = product + company + effect +  nb_doc_data + ud_doc_data+ des + size + div + color + storage_method +  valid_term + main_item_ingr + ingr_name ;
+	drug_data.innerHTML = result;
+    
+
+	// var chart = xmlDoc.getElementsByTagName("CHART")[0].childNodes[0].nodeValue;
+
+	// var drug_data = document.getElementById('drug-data');
+	// drug_data.innerHTML = chart;
+
+
+	// exceptionJson(extend);
+}
+
+function initDataWithExtend(ori, extend){
+	// var drug_data = document.getElementById('drug-data');
+	// drug_data.innerHTML = json_str;
+	initData(ori, extend);
+}
+
+//table 표시(앞,뒤), 색깔(앞,뒤), 분할선(앞,뒤), 사이즈(장, 단, 두께)
+function initData(json_str, extend){
+ 
+
+	var drug_data = document.getElementById('drug-data');
+
+	var json = JSON.parse(json_str);
+	// drug_data.innerHTML = json.p_no + " " + json.p_name;
+
+
+	var p_no = json.p_no;
+	var p_name = json.p_name;
+	
+	var c_no = json.c_no;
+	var c_name = json.c_name;
+	
+	var des = json.des;
+	var img = json.img;
+	var mark_front = json.mark_front;
+	var mark_back = json.mark_back;
+	var shape = json.shape;
+	var color_front = json.color_front;
+	var color_back = json.color_back;
+
+	var div_front = json.div_front;
+	var div_back = json.div_back;
+
+	var major_axis = json.major_axis;	
+	var minor_axis = json.minor_axis;	
+	var thickness = json.thickness;
+
+
+	var img_created = json.img_created;
+
+	var class_no = json.class_no;
+	var class_name = json.class_name;
+	var specialization = json.specialization;
+	var approval = json.approval;
+	var shape_code = json.shape_code;
+	var updated = json.updated;
+
+	var storage_method = "";
+	var valid_term = "";
+	var effect = "";
+
+	var main_item_ingr = "";
+	var ingr_name = "";
+
+	var nb_doc_data = "";
+	var ud_doc_data = "";
+
+	if(extend != undefined){
+
+		try{
+				var extend_json = JSON.parse(extend);
+
+
+				valid_term = '<li><div class="title">유효기간</div><div class="content">'+extend_json.valid_term+'</div></li>';
+
+
+				storage_method = '<li><div class="title">저장방법</div><div class="content">'+extend_json.storage_method+'</div></li>';
+
+
+				main_item_ingr = '<li><div class="title">완제/원료구분</div><div class="content">'+extend_json.main_item_ingr+'</div></li>';
+
+				ingr_name = '<li><div class="title">첨가제</div><div class="content">'+extend_json.ingr_name+'</div></li>';
+
+				effect = '<li class="doc-data"><div class="title">효능·효과</div><div class="sub-content">';
+				
+				extend_json.ee_doc_data.forEach(function(data, idx){
+				    
+				    effect += data + "<br>";
+				});
+				effect += '</div></li>';
+
+
+
+				nb_doc_data = '<li class="doc-data"> <div class="title">사용상 주의사항</div>';
+
+				extend_json.nb_doc_data.forEach(function(data, idx){
+				    
+				    if ( data.p == undefined ) {
+
+						nb_doc_data += data+ "<br>";
+				    }else{
+				    	 nb_doc_data += '<div class="nb"><div class="sub-title">'+data.title+'</div>';
+
+						data.p.forEach(function(d, i){
+							nb_doc_data += '<div class="sub-content ">'+d+'</div>';
+						});
+						
+						nb_doc_data += '</div>';
+				    }
+				   
+
+				    
+				});
+				nb_doc_data += '</li>';
+
+
+
+				ud_doc_data = '<li class="doc-data"><div class="title">용법·용량</div><div class="sub-content">';
+
+				extend_json.ud_doc_data.forEach(function(data, idx){
+				    if ( data.p == undefined ) {
+				    	ud_doc_data += data+ "<br>";
+				    }else{
+ 						ud_doc_data += '<div class="ud"><div class="sub-title">'+data.title+'</div>';
+
+						data.p.forEach(function(d, i){
+							ud_doc_data += '<div class="sub-content ">'+d+'</div>';
+						});
+						
+						ud_doc_data += '</div>';
+				    }
+				    
+
+				    
+				});
+				ud_doc_data += '</div></li>';
+		}catch(error){
+			console.error(error);
+
+
+			exceptionJson(extend);
+		}
+
+	}
+
+
+
+ 	var result = '';
+
+	var product = '<li><div class="title">품목</div><div class="content">'+p_name+'</div></li>';
+	
+
+	var company = '<li><div class="title">업소</div><div class="content">'+c_name+'</div></li>';
+
+
+
+	var class_name = '<li><div class="title">효능</div><div class="content">'+class_name+'</div></li>';
+
+
+	if(effect == ''){
+		effect = class_name;
+	}
+
+	var des = '<li><div class="title">성상</div><div class="content">'+des+'</div></li>';
+
+
+	var size = '<li><div class="title">사이즈(mm)</div><div class="content"><table><thead class="div3"><tr><th >장</th><th>단</th><th>두께</th></tr></thead><tbody><tr><td>'+major_axis+'</td><td>'+minor_axis+'</td><td>'+thickness+'</td></tr></tbody></table></div></li>';
+
+   
+	var div = '<li><div class="title">분할선</div><div class="content"><table><thead class="div2"><tr><th>앞</th><th>뒤</th></tr></thead><tbody><tr><td>'+div_front+'</td><td>'+div_back+'</td></tr></tbody></table></div></li>';
+
+
+	var color = '<li><div class="title">색깔</div><div class="content"><table><thead class="div2"><tr><th>앞</th><th>뒤</th></tr></thead><tbody><tr><td>'+color_front+'</td><td>'+color_back+'</td></tr></tbody></table></div></li>';
+
+	result = product + company + effect +  nb_doc_data + ud_doc_data+ des + size + div + color + storage_method +  valid_term + main_item_ingr + ingr_name ;
+	drug_data.innerHTML = result;
+  // if(typeof Android !== "undefined" && Android !== null) {
+  //     Android.showToast(json);
+  // } else {
+  //     alert("Not viewing in webview");
+  // }
+
+
+  saveHtml(document.documentElement.innerHTML);
+
+}
+
+
+// function getMoreDetailApi(id){
+
+//     var xmlhttp = new XMLHttpRequest();
+
+//     xmlhttp.onreadystatechange = function() {
+//         if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+//            if (xmlhttp.status == 200) {
+
+//            		// xmlhttp.responseText
+// 				var drug_data = document.getElementById('drug-data');
+//                drug_data.innerHTML = xmlhttp.responseText;
+//            }
+//            else if (xmlhttp.status == 400) {
+//               alert('There was an error 400');
+//            }
+//            else {
+//                alert(xmlhttp.status);
+//            }
+//         }
+//     };
+
+//     console.log("http://apis.data.go.kr/1471057/MdcinPrductPrmisnInfoService1/getMdcinPrductItem?ServiceKey=SxFlIFuuam1GbQpirOoR%2FSkLZRJN9Qwf4a3%2FI3QkmE%2Fij6u07joiJ6DgZmToQElFA32HgCgMTZ%2BEaayfFLXthg%3D%3D&item_seq="+id);
+
+//     xmlhttp.open("GET", "http://apis.data.go.kr/1471057/MdcinPrductPrmisnInfoService1/getMdcinPrductItem?ServiceKey=SxFlIFuuam1GbQpirOoR%2FSkLZRJN9Qwf4a3%2FI3QkmE%2Fij6u07joiJ6DgZmToQElFA32HgCgMTZ%2BEaayfFLXthg%3D%3D&item_seq="+id, true);
+//     xmlhttp.send();
+	
+// }
+
+
+
+
+</script>

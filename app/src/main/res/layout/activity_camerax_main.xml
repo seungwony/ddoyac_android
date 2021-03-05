@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <SurfaceView
+        android:id="@+id/overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintBottom_toBottomOf="@+id/graphics_overlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/graphics_overlay" />
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintDimensionRatio="H,3:4"
+
+        app:layout_constraintVertical_bias="0.45">
+
+
+    </androidx.camera.view.PreviewView>
+
+    <com.nexysquare.ddoyac.textdetection.others.GraphicOverlay
+        android:id="@+id/graphics_overlay_ocr"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.45"
+        app:layout_constraintDimensionRatio="H,1:1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        />
+    <com.nexysquare.ddoyac.textdetection.others.GraphicOverlay
+        android:id="@+id/graphics_overlay"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.45"
+        app:layout_constraintDimensionRatio="H,1:1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        />
+
+
+
+    <LinearLayout
+        android:background="@color/app_basic_bg"
+        app:layout_constraintBottom_toTopOf="@id/graphics_overlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="0dp">
+        <LinearLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
+
+            android:id="@+id/search_expanded_box"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@drawable/rounded_corners"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+            <ImageButton
+                android:id="@+id/more_btn"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_more_alt"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+            <EditText
+                android:textIsSelectable="true"
+                android:focusable="false"
+                android:inputType="none"
+                android:id="@+id/text"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/search_box_icon_size"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/search_box_text_left_margin"
+                android:textSize="@dimen/search_text_size"
+                android:textColor="@color/searchbox_text_color"
+                android:textColorHint="@color/searchbox_hint_text_color"
+                android:background="@null"
+                android:hint="@string/search_hint"
+                android:transitionName="search_edit_view"
+                android:singleLine="true"
+                android:imeOptions="actionSearch" />
+            <ImageButton
+                android:id="@+id/search_btn"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_search"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:importantForAccessibility="no"
+                android:tint="@color/searchbox_icon_tint"
+                android:visibility="visible"
+                />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <View
+
+                android:background="@color/bright_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1px"/>
+            <ImageButton
+                android:tint="@color/darker_gray"
+                android:id="@+id/filter_clear_btn"
+                android:layout_alignParentEnd="true"
+                android:background="?attr/selectableItemBackground"
+                android:src="@drawable/ic_filter_clear"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/view_margin_spacing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+
+                    android:text="@string/guide_init_user"
+                    android:id="@+id/shape_info_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_marginStart="@dimen/view_margin_spacing"
+                    android:text=""
+                    android:id="@+id/extract_color_info_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:visibility="gone"
+                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/view_margin_spacing"
+                android:layout_marginEnd="56dp"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/filter_group"
+
+                    app:singleLine="true"
+
+                    app:chipSpacingHorizontal="@dimen/view_spacing"
+                    android:layout_width="wrap_content"
+
+
+                    android:animateLayoutChanges="true"
+
+                    android:layout_height="wrap_content">
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+
+
+            <ImageButton
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:id="@+id/filter_btn"
+                android:visibility="gone"
+                android:layout_alignParentEnd="true"
+                android:layout_width="56dp"
+                android:src="@drawable/ic_filter_list"
+                android:layout_height="56dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@color/app_basic_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/graphics_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+
+            <TextView
+                android:id="@+id/search_type_text"
+                android:layout_height="80dp"
+                android:layout_width="80dp"
+                android:layout_centerInParent="true"
+                android:text="OCR"
+                android:lines="1"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:textColor="@color/gray"
+                android:textSize="30sp"
+                android:background="@drawable/circular_bg"/>
+
+
+
+            <ImageButton
+                android:id="@+id/capture_btn"
+                android:background="@drawable/capture"
+                android:layout_centerInParent="true"
+                android:layout_width="80dp"
+                android:layout_height="80dp"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/capture_btn">
+
+                <ImageView
+                    android:id="@+id/extract_color_img"
+                    android:layout_width="30dp"
+
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/view_margin_spacing" />
+            </FrameLayout>
+            <FrameLayout
+                android:layout_toStartOf="@id/capture_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/cropImg"
+                    android:layout_gravity="center"
+                    android:layout_centerVertical="true"
+                    android:layout_width="80dp"
+                    android:layout_margin="@dimen/view_margin_spacing"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_gravity="center_horizontal"
+            android:layout_width="340dp"
+            android:weightSum="3"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/guide_btn"
+                android:text="@string/bottom_tab_guide"
+                android:textColor="@color/searchbox_text_color"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                />
+
+            <Button
+                android:id="@+id/search_ocr_btn"
+                android:text="@string/bottom_tab_ocr"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/capture_stroke_inactive"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_height="wrap_content"
+                />
+
+            <Button
+                android:id="@+id/search_img_btn"
+                android:text="@string/bottom_tab_img"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/searchbox_text_color"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <View
+        app:layout_constraintBottom_toTopOf="@id/graphics_overlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/linear_shadow_rev"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"/>
+    <View
+        app:layout_constraintTop_toBottomOf="@id/graphics_overlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/linear_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"/>
+
+
+
+    <include
+        layout="@layout/view_extra_menu"
+        android:id="@+id/extra_menu"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

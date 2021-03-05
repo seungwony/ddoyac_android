@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:id="@+id/extra_menu_bg"
+    android:paddingTop="64dp"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:background="@color/app_basic_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/keyword_search_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/view_spacing"
+            android:layout_weight="1">
+            <ImageView
+                android:src="@drawable/ic_search"
+                android:layout_width="@dimen/extra_menu_img_size"
+                android:layout_height="@dimen/extra_menu_img_size"
+                app:tint="@color/black" />
+            <TextView
+                android:text="키워드 검색"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:id="@+id/app_info_btn"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/view_spacing"
+            android:layout_weight="1">
+            <ImageView
+                android:src="@drawable/ic_info"
+                android:layout_width="@dimen/extra_menu_img_size"
+                android:layout_height="@dimen/extra_menu_img_size"
+                android:textColor="@color/black" />
+            <TextView
+                android:text="앱정보"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/feedback_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/view_spacing"
+            android:layout_weight="1">
+            <ImageView
+                android:src="@drawable/ic_feedback"
+                android:layout_width="@dimen/extra_menu_img_size"
+                android:layout_height="@dimen/extra_menu_img_size"
+                android:textColor="@color/black" />
+            <TextView
+                android:text="피드백"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="모듈 테스트"
+        android:layout_margin="@dimen/view_margin_spacing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/similarity_test_btn"
+        android:text="Two of images similarity test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/extract_compare_test_btn"
+        android:text="Multi images extract and compare test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/extract_color_test_btn"
+        android:text="Extract color from image and lut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:visibility="gone"
+        android:id="@+id/opencv_camera_test_btn"
+        android:text="Opencv camera test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:visibility="visible"
+        android:id="@+id/camerax_ocr_btn"
+        android:text="CameraX OCR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:visibility="visible"
+        android:id="@+id/opencv_contour_btn"
+        android:text="Opencv Contour test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+
+        android:id="@+id/camera_btn"
+        android:text="camera test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+
+        android:id="@+id/search_drug_btn"
+        android:text="Search Drug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+</LinearLayout>

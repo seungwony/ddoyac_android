@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.nexysquare.ddoyac">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:allowBackup="true"
+        android:name="com.nexysquare.ddoyac.GlobalApp"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:largeHeap="true"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.Ddoyac">
+
+
+        <activity
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ddoyac.NoActionBar"
+            android:name="com.nexysquare.ddoyac.activity.CameraMainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.nexysquare.ddoyac.activity.ExtractDescriptorActivity"/>
+        <activity android:name="com.nexysquare.ddoyac.activity.ExtractColorTestActivity"/>
+        <activity android:name="com.nexysquare.ddoyac.activity.SimilarityTestActivity"/>
+        <activity android:name="com.nexysquare.ddoyac.activity.DetailPillActivity"/>
+        <activity android:name="com.nexysquare.ddoyac.activity.OpenCVTestActivity"/>
+        <activity android:name="com.nexysquare.ddoyac.activity.OpenCVContourActivity"/>
+        <activity android:name="com.nexysquare.ddoyac.activity.MainActivity"
+            android:theme="@style/Theme.Ddoyac.NoActionBar"
+            android:screenOrientation="portrait"
+            />
+
+        <activity android:name="com.nexysquare.ddoyac.activity.PermissionIntroActivity"
+            android:theme="@style/Theme.Ddoyac.NoActionBar"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name="com.nexysquare.ddoyac.activity.AppInfoActivity"
+            android:theme="@style/Theme.Ddoyac.NoActionBar"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name="com.nexysquare.ddoyac.activity.SettingsActivity"
+            android:theme="@style/Theme.Ddoyac.NoActionBar"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name="com.nexysquare.ddoyac.activity.MarkImgPickerActivity"
+            android:theme="@style/Theme.Ddoyac.Light.NoActionBar"
+            />
+        <activity android:name="com.nexysquare.ddoyac.activity.DrugDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name="com.nexysquare.ddoyac.activity.DrugDetailV2Activity"
+            android:theme="@style/Theme.Ddoyac.NoActionBar"/>
+        <activity android:name="com.nexysquare.ddoyac.activity.SearchDrugActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Ddoyac.NoActionBar"/>
+        <activity android:name="com.nexysquare.ddoyac.activity.CameraActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+
+        <activity android:name="com.nexysquare.ddoyac.activity.SearchFilterActivity"
+            android:theme="@style/Theme.Ddoyac.NoActionBar"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="@string/file_provider_authorities"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
+
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="ocr" />
+    </application>
+
+</manifest>

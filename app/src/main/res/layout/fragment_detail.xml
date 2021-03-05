@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<com.nexysquare.ddoyac.view.NestedWebView
+android:id="@+id/nested_webview"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+
+android:fillViewport="true"
+android:focusable="true"
+android:isScrollContainer="false"
+android:visibility="visible"
+app:layout_behavior="@string/appbar_scrolling_view_behavior"
+app:layout_scrollFlags="scroll|exitUntilCollapsed" />
+
+<ProgressBar
+android:id="@+id/progress_bar"
+android:layout_gravity="center"
+android:layout_marginBottom="150dp"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"/>
+</FrameLayout>
