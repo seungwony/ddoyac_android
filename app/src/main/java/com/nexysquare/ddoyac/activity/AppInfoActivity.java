@@ -14,10 +14,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.nexysquare.ddoyac.R;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class AppInfoActivity extends AppCompatActivity {
     public static void open(Context context) {
         Intent intent = new Intent(context, AppInfoActivity.class);
-
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
 
         context.startActivity(intent);
     }

@@ -93,6 +93,8 @@ import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class SearchDrugActivity extends AppCompatActivity {
     private final String TAG = "SearchDrugActivity";
 
@@ -131,7 +133,6 @@ public class SearchDrugActivity extends AppCompatActivity {
 
     public static void open(Context context) {
         Intent intent = new Intent(context, SearchDrugActivity.class);
-
         context.startActivity(intent);
     }
 

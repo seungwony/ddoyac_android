@@ -66,6 +66,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.nexysquare.ddoyac.Constants.FLASH_AUTO;
 import static com.nexysquare.ddoyac.Constants.FLASH_OFF;
 import static com.nexysquare.ddoyac.Constants.FLASH_ON;
@@ -76,7 +77,7 @@ public class CameraActivity extends AppCompatActivity {
     private final String TAG = "CameraActivity";
     public static void open(Context context) {
         Intent intent = new Intent(context, CameraActivity.class);
-
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

@@ -63,6 +63,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.android.material.chip.ChipGroup;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.ml.vision.FirebaseVision;
@@ -102,6 +103,8 @@ import me.toptas.fancyshowcase.FancyShowCaseView;
 import me.toptas.fancyshowcase.FocusShape;
 import me.toptas.fancyshowcase.listener.DismissListener;
 import me.toptas.fancyshowcase.listener.OnViewInflateListener;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class CameraMainActivity extends AppCompatActivity implements SurfaceHolder.Callback, View.OnClickListener {
     private final static String TAG  = "CameraXOCRActivity";
@@ -193,7 +196,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
     }
     public static void open(Context context) {
         Intent intent = new Intent(context, CameraMainActivity.class);
-
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
     @Override
@@ -780,10 +783,21 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 
 
+                if(boxWidth<=0 && boxHeight<=0) return;
+
+//                Log.d(TAG, "boxWidth : "+ boxWidth + " boxHeight : " + boxHeight);
+                if(bmp==null) return;
                 //Creating new cropped bitmap
 //                final Bitmap bitmap = Bitmap.createBitmap(bmp, left, top, boxWidth, boxHeight);
-                final Bitmap bitmap = Bitmap.createBitmap(bmp, xOffset, yOffset, boxWidth, boxHeight);
+                Bitmap bitmap = null;
+                try{
+                    bitmap = Bitmap.createBitmap(bmp, xOffset, yOffset, boxWidth, boxHeight);
+                }catch (Exception e){
+                    Log.e(TAG, e.getMessage());
+                    return;
+                }
 
+                if(bitmap==null) return;
 
 //                runOnUiThread(new Runnable() {
 //                    @Override
@@ -833,6 +847,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 
                 if(!inferencing){
+                    Bitmap finalBitmap = bitmap;
                     runInBackground(new Runnable() {
                         @Override
                         public void run() {
@@ -884,7 +899,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                                         int right = (int)location.right;
                                         int bottom = (int)location.bottom;
 
-                                        bm_last = Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top);
+                                        bm_last = Bitmap.createBitmap(finalBitmap, left, top, right - left, bottom - top);
 
 //                                    runOnUiThread(new Runnable() {
 //                                        @Override
@@ -977,10 +992,12 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 
 
+
                 //initializing FirebaseVisionTextRecognizer object
                 FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
                         .getOnDeviceTextRecognizer();
                 //Passing FirebaseVisionImage Object created from the cropped bitmap
+                Bitmap finalBitmap1 = bitmap;
                 Task<FirebaseVisionText> result = detector.processImage(FirebaseVisionImage.fromBitmap(bitmap))
                         .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
                             @Override
@@ -1010,7 +1027,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                                        int bottom = block.getBoundingBox().bottom;
 
                                        if(left> 0 && top > 0 && right - left > 0 && bottom - top > 0){
-                                           final Bitmap _bm = Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top);
+                                           final Bitmap _bm = Bitmap.createBitmap(finalBitmap1, left, top, right - left, bottom - top);
                                            runOnUiThread(new Runnable() {
                                                @Override
                                                public void run() {

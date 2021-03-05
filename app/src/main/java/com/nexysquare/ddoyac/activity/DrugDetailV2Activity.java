@@ -36,6 +36,8 @@ import com.nexysquare.ddoyac.util.JsonHelper;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class DrugDetailV2Activity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
 
     private static final int PERCENTAGE_TO_ANIMATE_AVATAR = 20;
@@ -50,7 +52,6 @@ public class DrugDetailV2Activity extends AppCompatActivity implements AppBarLay
 //        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context,
 //                뷰1, "호칭1");
         Intent intent = new Intent(context, DrugDetailV2Activity.class);
-
         intent.putExtra("p_no", p_no);
         context.startActivity(intent);
     }

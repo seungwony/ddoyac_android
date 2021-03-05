@@ -23,6 +23,7 @@ import com.nexysquare.ddoyac.R;
 
 import io.realm.Realm;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.nexysquare.ddoyac.Constants.LENS_BACK;
 
 public class PermissionIntroActivity extends AppCompatActivity {
@@ -36,6 +37,7 @@ public class PermissionIntroActivity extends AppCompatActivity {
     Realm realm;
     public static void open(Context context) {
         Intent intent = new Intent(context, PermissionIntroActivity.class);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
