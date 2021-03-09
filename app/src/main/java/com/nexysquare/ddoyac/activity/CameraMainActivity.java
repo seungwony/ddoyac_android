@@ -7,14 +7,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.YuvImage;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -63,15 +69,20 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.android.material.chip.ChipGroup;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
-import com.google.firebase.ml.vision.text.FirebaseVisionText;
-import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+//import com.google.firebase.ml.vision.FirebaseVision;
+//import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+//import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
+//import com.google.firebase.ml.vision.text.FirebaseVisionText;
+//import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
 import com.nexysquare.ddoyac.env.ImageUtils;
+import com.nexysquare.ddoyac.model.DrugParcelable;
 import com.nexysquare.ddoyac.tflite.DetectorFactory;
 import com.nexysquare.ddoyac.tflite.YoloV5Classifier;
 import com.nexysquare.ddoyac.util.BitmapUtil;
@@ -83,10 +94,17 @@ import com.nexysquare.ddoyac.textdetection.TextGraphic;
 import com.nexysquare.ddoyac.textdetection.others.GraphicOverlay;
 import com.nexysquare.ddoyac.tflite.Classifier;
 import com.nexysquare.ddoyac.tracking.MultiBoxTracker;
+import com.nexysquare.ddoyac.util.ImageConversionUtil;
 import com.nexysquare.ddoyac.util.LabelHelper;
 import com.nexysquare.ddoyac.view.ColorCircleDrawable;
 
+import org.tensorflow.lite.gpu.CompatibilityList;
+import org.tensorflow.lite.gpu.GpuDelegate;
+import org.tensorflow.lite.nnapi.NnApiDelegate;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -179,21 +197,21 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
      * Responsible for converting the rotation degrees from CameraX into the one compatible with Firebase ML
      */
 
-    private int degreesToFirebaseRotation(int degrees) {
-        switch (degrees) {
-            case 0:
-                return FirebaseVisionImageMetadata.ROTATION_0;
-            case 90:
-                return FirebaseVisionImageMetadata.ROTATION_90;
-            case 180:
-                return FirebaseVisionImageMetadata.ROTATION_180;
-            case 270:
-                return FirebaseVisionImageMetadata.ROTATION_270;
-            default:
-                throw new IllegalArgumentException(
-                        "Rotation must be 0, 90, 180, or 270.");
-        }
-    }
+//    private int degreesToFirebaseRotation(int degrees) {
+//        switch (degrees) {
+//            case 0:
+//                return FirebaseVisionImageMetadata.ROTATION_0;
+//            case 90:
+//                return FirebaseVisionImageMetadata.ROTATION_90;
+//            case 180:
+//                return FirebaseVisionImageMetadata.ROTATION_180;
+//            case 270:
+//                return FirebaseVisionImageMetadata.ROTATION_270;
+//            default:
+//                throw new IllegalArgumentException(
+//                        "Rotation must be 0, 90, 180, or 270.");
+//        }
+//    }
     public static void open(Context context) {
         Intent intent = new Intent(context, CameraMainActivity.class);
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -292,9 +310,25 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         int cropSize = detector.getInputSize();
         Log.i(TAG, "cropsSize: "+cropSize); // 640, 320 ...
 
-        detector.useNNAPI();
 
-        detector.setNumThreads(2);
+        CompatibilityList compactList = new CompatibilityList();
+        if(compactList.isDelegateSupportedOnThisDevice()){
+
+
+//            detector.useBestOption(compactList.getBestOptionsForThisDevice());
+
+            detector.setNumThreads(2);
+            Log.d(TAG,"isDelegateSupportedOnThisDevice true");
+
+        }else {
+           // detector.useNNAPI();
+            detector.setNumThreads(2);
+            Log.d(TAG,"isDelegateSupportedOnThisDevice false");
+        }
+//        detector.useNNAPI();
+//        detector.useGpu();
+
+//        detector.setNumThreads(2);
 
 //        croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Bitmap.Config.ARGB_8888);
 //
@@ -682,7 +716,14 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 //        cameraProviderFuture.canc
 //        mCameraView.getpro
     }
-
+    private Bitmap getBitmap(ImageProxy image) {
+        ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+        buffer.rewind();
+        byte[] bytes = new byte[buffer.capacity()];
+        buffer.get(bytes);
+        byte[] clonedBytes = bytes.clone();
+        return BitmapFactory.decodeByteArray(clonedBytes, 0, clonedBytes.length);
+    }
     /**
      * Binding to camera
      */
@@ -714,22 +755,52 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         imageAnalysis.setAnalyzer(executor, new ImageAnalysis.Analyzer() {
             @SuppressLint("UnsafeExperimentalUsageError")
             @Override
-            public void analyze(@NonNull ImageProxy image) {
+            public void analyze(@NonNull ImageProxy imageProxy) {
                 //changing normal degrees into Firebase rotation
 //                Rect rect = new Rect();
 //                rect.top
 //                image.setCropRect();
 
 
-                int rotationDegrees = degreesToFirebaseRotation(image.getImageInfo().getRotationDegrees());
-                if (image == null || image.getImage() == null) {
+//                int rotationDegrees = degreesToFirebaseRotation(imageProxy.getImageInfo().getRotationDegrees());
+                if (imageProxy == null || imageProxy.getImage() == null) {
                     return;
                 }
                 //Getting a FirebaseVisionImage object using the Image object and rotationDegrees
-                final Image mediaImage = image.getImage();
-                FirebaseVisionImage images = FirebaseVisionImage.fromMediaImage(mediaImage, rotationDegrees);
+                final Image mediaImage = imageProxy.getImage();
+
+//                if(mediaImage.getFormat()==ImageFormat.YUV_420_888){
+//
+//                }else if(mediaImage.getFormat()==ImageFormat.NV21){
+//
+//                }
+//                Bitmap bmp = imageProxyToBitmap(imageProxy);
+//                FirebaseVisionImage images = FirebaseVisionImage.fromMediaImage(mediaImage, rotationDegrees);
+
+//                InputImage inputImage =
+//                            InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
+
+                Bitmap bmp = ImageConversionUtil.convertYUV420888ToNV21_bitmap(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
+//                Bitmap bmp = ImageConversionUtil.con(mediaImage);
+
+
+
+
+                if(bmp!=null){
+//                    Log.d(TAG, "bmp w : " + bmp.getWidth() + " h : " + bmp.getHeight());
+
+                }else{
+                    Log.d(TAG, "bmp is null");
+                    imageProxy.close();
+                }
+//                if (mediaImage != null) {
+//                InputImage image =
+//                        InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
+//                    // Pass image to an ML Kit Vision API
+//                    // ...
+//                }
                 //Getting bitmap from FirebaseVisionImage Object
-                Bitmap bmp = images.getBitmap();
+//                Bitmap bmp = images.getBitmap();
 
 
                 int layout_w = 320;
@@ -751,8 +822,8 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                 }
 
 
-                int height = bmp.getHeight();
-                int width = bmp.getWidth();
+//                int height = bmp.getHeight();
+//                int width = bmp.getWidth();
 
 
 
@@ -782,22 +853,41 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 
 
+//                Bitmap bmp = toBitmap(mediaImage);
 
-                if(boxWidth<=0 && boxHeight<=0) return;
+//                if(boxWidth<=0 && boxHeight<=0) return;
 
-//                Log.d(TAG, "boxWidth : "+ boxWidth + " boxHeight : " + boxHeight);
-                if(bmp==null) return;
+//                Log.d(TAG, "boxWidth : "+ boxWidth + " boxHeight : " + boxHeight + " xOffset : " + xOffset + " yOffset : " + yOffset);
+
+                if(bmp==null){
+                    imageProxy.close();
+                    return;
+                }
                 //Creating new cropped bitmap
 //                final Bitmap bitmap = Bitmap.createBitmap(bmp, left, top, boxWidth, boxHeight);
                 Bitmap bitmap = null;
                 try{
+
+
                     bitmap = Bitmap.createBitmap(bmp, xOffset, yOffset, boxWidth, boxHeight);
                 }catch (Exception e){
+                    Log.e(TAG, "created bitmap exception");
                     Log.e(TAG, e.getMessage());
+                    Log.e(TAG, "bmp width : " + bmp.getWidth()+" bmp height : " + bmp.getHeight());
+                    imageProxy.close();
                     return;
                 }
 
-                if(bitmap==null) return;
+
+
+                InputImage inputImage2 =
+                        InputImage.fromBitmap(bitmap, imageProxy.getImageInfo().getRotationDegrees());
+
+
+                if(bitmap==null){
+                    imageProxy.close();
+                    return;
+                }
 
 //                runOnUiThread(new Runnable() {
 //                    @Override
@@ -825,10 +915,10 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 //                int targetHeight = (int) (targetWidth * aspectRatio);
                 Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, cropSize, cropSize, false);
 
-                int rotation = image.getImageInfo().getRotationDegrees();
+                int rotation = imageProxy.getImageInfo().getRotationDegrees();
                 int orientation = getScreenOrientation();
 
-                Log.d(TAG, "rotation : " + rotation + " orientation : " + orientation);
+//                Log.d(TAG, "rotation : " + rotation + " orientation : " + orientation);
                 frameToCropTransform =
                         ImageUtils.getTransformationMatrix(
                                 boxWidth, boxHeight,
@@ -857,8 +947,23 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                             Log.i(TAG, "Running detection on image ");
                             final long startTime = SystemClock.uptimeMillis();
 
+
                             final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
-                            Log.i(TAG, "results: " + results);
+
+
+                            Collections.sort(results, new Comparator<Classifier.Recognition>() {
+                                @Override
+                                public int compare(Classifier.Recognition o1, Classifier.Recognition o2) {
+                                    if(o1.getConfidence() > o2.getConfidence()){
+                                        return 1;
+                                    }else if(o1.getConfidence()< o2.getConfidence()){
+                                        return -1;
+                                    }
+
+                                    return 0;
+                                }
+                            });
+                         //   Log.i(TAG, "results: " + results);
                             long lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
 //                        Log.e("CHECK", "run: " + results.size());
@@ -899,7 +1004,20 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                                         int right = (int)location.right;
                                         int bottom = (int)location.bottom;
 
-                                        bm_last = Bitmap.createBitmap(finalBitmap, left, top, right - left, bottom - top);
+                                        int width = right - left;
+                                        int height = bottom - top;
+
+                                        if(width>0&& height>0 && finalBitmap!=null && finalBitmap.getHeight()>0){
+                                            try{
+                                                bm_last = Bitmap.createBitmap(finalBitmap, left, top, width, height);
+                                            }catch (Exception ex){
+                                                imageProxy.close();
+                                                Log.e(TAG, ex.getMessage());
+                                            }
+
+                                        }
+
+
 
 //                                    runOnUiThread(new Runnable() {
 //                                        @Override
@@ -988,87 +1106,95 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                         }
                     });
                 }
+                if (mediaImage != null) {
+                    InputImage inputImage =
+                            InputImage.fromBitmap(bitmap, 0);
+//                    InputImage image =
+//                            InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
+                    // Pass image to an ML Kit Vision API
+                    // ...
+                    recognizeText(inputImage, bitmap, imageProxy);
+                }
 
 
 
-
-
-                //initializing FirebaseVisionTextRecognizer object
-                FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
-                        .getOnDeviceTextRecognizer();
-                //Passing FirebaseVisionImage Object created from the cropped bitmap
-                Bitmap finalBitmap1 = bitmap;
-                Task<FirebaseVisionText> result = detector.processImage(FirebaseVisionImage.fromBitmap(bitmap))
-                        .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-                            @Override
-                            public void onSuccess(FirebaseVisionText firebaseVisionText) {
-                                // Task completed successfully
-                                // ...
-
-                                graphics_overlay_ocr.clear();
-
-
-
-//                                firebaseVisionText.getTextBlocks()
-
-
-                                //getting decoded text
-                                String text = firebaseVisionText.getText();
-                                //Setting the decoded text in the texttview
-
-                                //for getting blocks and line elements
-                                for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
-                                    String blockText = block.getText();
-
-                                   if(block.getBoundingBox()!=null){
-                                       int top = block.getBoundingBox().top;
-                                       int left = block.getBoundingBox().left;
-                                       int right = block.getBoundingBox().right;
-                                       int bottom = block.getBoundingBox().bottom;
-
-                                       if(left> 0 && top > 0 && right - left > 0 && bottom - top > 0){
-                                           final Bitmap _bm = Bitmap.createBitmap(finalBitmap1, left, top, right - left, bottom - top);
-                                           runOnUiThread(new Runnable() {
-                                               @Override
-                                               public void run() {
-    //                                               cropImg.setImageBitmap(_bm);
-                                                   foundKeyword= text;
-
-    //                                               String colors = getMostCommonColour(_bm);
-                                                   textView.setText(text);
-
-                                               }
-                                           });
-                                       }
-
-                                   }
-
-                                    for (FirebaseVisionText.Line line : block.getLines()) {
-                                        String lineText = line.getText();
-                                        for (FirebaseVisionText.Element element : line.getElements()) {
-                                            String elementText = element.getText();
-
-                                            GraphicOverlay.Graphic textGraphic = new TextGraphic(graphics_overlay_ocr, element);
-                                            graphics_overlay_ocr.add(textGraphic);
-
-
-
-                                        }
-                                    }
-                                }
-                                image.close();
-                            }
-                        })
-                        .addOnFailureListener(
-                                new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        // Task failed with an exception
-                                        // ...
-                                        Log.e("Error", e.toString());
-                                        image.close();
-                                    }
-                                });
+//                //initializing FirebaseVisionTextRecognizer object
+//                FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
+//                        .getOnDeviceTextRecognizer();
+//                //Passing FirebaseVisionImage Object created from the cropped bitmap
+//
+//                Task<FirebaseVisionText> result = detector.processImage(FirebaseVisionImage.fromBitmap(bitmap))
+//                        .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+//                            @Override
+//                            public void onSuccess(FirebaseVisionText firebaseVisionText) {
+//                                // Task completed successfully
+//                                // ...
+//
+//                                graphics_overlay_ocr.clear();
+//
+//
+//
+////                                firebaseVisionText.getTextBlocks()
+//
+//
+//                                //getting decoded text
+//                                String text = firebaseVisionText.getText();
+//                                //Setting the decoded text in the texttview
+//
+//                                //for getting blocks and line elements
+//                                for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
+//                                    String blockText = block.getText();
+//
+//                                   if(block.getBoundingBox()!=null){
+//                                       int top = block.getBoundingBox().top;
+//                                       int left = block.getBoundingBox().left;
+//                                       int right = block.getBoundingBox().right;
+//                                       int bottom = block.getBoundingBox().bottom;
+//
+//                                       if(left> 0 && top > 0 && right - left > 0 && bottom - top > 0){
+//                                           final Bitmap _bm = Bitmap.createBitmap(finalBitmap1, left, top, right - left, bottom - top);
+//                                           runOnUiThread(new Runnable() {
+//                                               @Override
+//                                               public void run() {
+//    //                                               cropImg.setImageBitmap(_bm);
+//                                                   foundKeyword= text;
+//
+//    //                                               String colors = getMostCommonColour(_bm);
+//                                                   textView.setText(text);
+//
+//                                               }
+//                                           });
+//                                       }
+//
+//                                   }
+//
+//                                    for (FirebaseVisionText.Line line : block.getLines()) {
+//                                        String lineText = line.getText();
+//                                        for (FirebaseVisionText.Element element : line.getElements()) {
+//                                            String elementText = element.getText();
+//
+//                                            GraphicOverlay.Graphic textGraphic = new TextGraphic(graphics_overlay_ocr, element);
+//                                            graphics_overlay_ocr.add(textGraphic);
+//
+//
+//
+//                                        }
+//                                    }
+//                                }
+//
+//                                imageProxy.close();
+//                            }
+//                        })
+//                        .addOnFailureListener(
+//                                new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        // Task failed with an exception
+//                                        // ...
+//                                        Log.e("Error", e.toString());
+//                                        imageProxy.close();
+//                                    }
+//                                });
             }
 
 
@@ -1138,14 +1264,152 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 //        camera.getCameraControl().startFocusAndMetering()
     }
 
-
-
     private Runnable focusingTOInvisible = new Runnable() {
         @Override
         public void run() {
 //            focusView.setVisibility(View.INVISIBLE);
         }
     };
+
+
+
+    private void recognizeText(InputImage image, Bitmap finalBitmap,ImageProxy imageProxy) {
+
+        // [START get_detector_default]
+        TextRecognizer recognizer = TextRecognition.getClient();
+        // [END get_detector_default]
+
+
+        // [START run_detector]
+        Task<Text> result =
+                recognizer.process(image)
+                        .addOnSuccessListener(new OnSuccessListener<Text>() {
+                            @Override
+                            public void onSuccess(Text visionText) {
+
+
+                                graphics_overlay_ocr.clear();
+
+                                // Task completed successfully
+                                // [START_EXCLUDE]
+                                // [START get_text]
+                                for (Text.TextBlock block : visionText.getTextBlocks()) {
+                                    Rect boundingBox = block.getBoundingBox();
+                                    Point[] cornerPoints = block.getCornerPoints();
+                                    String text = block.getText();
+
+
+                                    if (boundingBox != null) {
+                                        int top = boundingBox.top;
+                                        int left = boundingBox.left;
+                                        int right = boundingBox.right;
+                                        int bottom = boundingBox.bottom;
+
+                                        int width = right - left;
+                                        int height = bottom - top;
+                                        if (left > 0 && top > 0 && width > 0 && height > 0) {
+//                                            final Bitmap _bm = Bitmap.createBitmap(finalBitmap, left, top, width, height);
+
+
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+//                                                                                                   cropImg.setImageBitmap(_bm);
+                                                    foundKeyword = text;
+
+                                                    //                                               String colors = getMostCommonColour(_bm);
+                                                    textView.setText(text);
+
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    for (Text.Line line : block.getLines()) {
+                                        // ...
+                                        for (Text.Element element : line.getElements()) {
+                                            // ...
+
+
+                                           // element.getBoundingBox().offsetTo(0, -10);
+
+                                        }
+                                    }
+                                }
+
+                                GraphicOverlay.Graphic textGraphic = new TextGraphic(graphics_overlay_ocr, visionText);
+                                graphics_overlay_ocr.add(textGraphic);
+
+                                // [END get_text]
+                                // [END_EXCLUDE]
+                                imageProxy.close();
+
+                            }
+
+
+
+
+//                                firebaseVisionText.getTextBlocks()
+                                //getting decoded text
+//                                String text = firebaseVisionText.getText();
+//                                //Setting the decoded text in the texttview
+//
+//                                //for getting blocks and line elements
+//                                for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
+//                                    String blockText = block.getText();
+//
+//                                    if(block.getBoundingBox()!=null){
+//                                        int top = block.getBoundingBox().top;
+//                                        int left = block.getBoundingBox().left;
+//                                        int right = block.getBoundingBox().right;
+//                                        int bottom = block.getBoundingBox().bottom;
+//
+//                                        if(left> 0 && top > 0 && right - left > 0 && bottom - top > 0){
+//                                            final Bitmap _bm = Bitmap.createBitmap(finalBitmap1, left, top, right - left, bottom - top);
+//                                            runOnUiThread(new Runnable() {
+//                                                @Override
+//                                                public void run() {
+//                                                    //                                               cropImg.setImageBitmap(_bm);
+//                                                    foundKeyword= text;
+//
+//                                                    //                                               String colors = getMostCommonColour(_bm);
+//                                                    textView.setText(text);
+//
+//                                                }
+//                                            });
+//                                        }
+//
+//                                    }
+//
+//                                    for (FirebaseVisionText.Line line : block.getLines()) {
+//                                        String lineText = line.getText();
+//                                        for (FirebaseVisionText.Element element : line.getElements()) {
+//                                            String elementText = element.getText();
+//
+//                                            GraphicOverlay.Graphic textGraphic = new TextGraphic(graphics_overlay_ocr, element);
+//                                            graphics_overlay_ocr.add(textGraphic);
+//
+//
+//
+//                                        }
+//                                    }
+//                                }
+//                            }
+                        })
+                        .addOnFailureListener(
+                                new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Task failed with an exception
+                                        // ...
+                                        imageProxy.close();
+                                    }
+                                });
+
+
+
+        // [END run_detector]
+    }
 
     private boolean isPortraitMode() {
         int orientation = getResources().getConfiguration().orientation;

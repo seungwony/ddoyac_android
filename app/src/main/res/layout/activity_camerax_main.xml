@@ -134,7 +134,9 @@
             <LinearLayout
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="@dimen/view_margin_spacing"
+                android:layout_centerVertical="true"
+
+                android:layout_marginStart="@dimen/view_margin_spacing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
@@ -317,7 +319,7 @@
     <include
         layout="@layout/view_extra_menu"
         android:id="@+id/extra_menu"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

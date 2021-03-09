@@ -13,6 +13,7 @@ import com.nexysquare.ddoyac.env.Utils;
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.Tensor;
 
+import org.tensorflow.lite.gpu.CompatibilityList;
 import org.tensorflow.lite.gpu.GpuDelegate;
 import org.tensorflow.lite.nnapi.NnApiDelegate;
 
@@ -50,6 +51,8 @@ public class YoloV5Classifier implements Classifier {
      * @param labelFilename The filepath of label file for classes.
      * @param isQuantized   Boolean representing model is quantized or not
      */
+
+
     public static YoloV5Classifier create(
             final AssetManager assetManager,
             final String modelFilename,
@@ -72,8 +75,19 @@ public class YoloV5Classifier implements Classifier {
         }
         br.close();
 
+
+
+
+
+
+
+//        if(Interpreter.Options())
         try {
             Interpreter.Options options = (new Interpreter.Options());
+
+
+
+
             options.setNumThreads(NUM_THREADS);
             if (isNNAPI) {
                 d.nnapiDelegate = null;
@@ -186,6 +200,11 @@ public class YoloV5Classifier implements Classifier {
         }
     }
 
+    public void useBestOption(GpuDelegate.Options options){
+        gpuDelegate = new GpuDelegate(options);
+        tfliteOptions.addDelegate(gpuDelegate);
+        recreateInterpreter();
+    }
     public void useCPU() {
         recreateInterpreter();
     }
@@ -364,6 +383,8 @@ public class YoloV5Classifier implements Classifier {
         }
         return imgData;
     }
+
+
 
     public ArrayList<Recognition> recognizeImage(Bitmap bitmap) {
         ByteBuffer byteBuffer_ = convertBitmapToByteBuffer(bitmap);

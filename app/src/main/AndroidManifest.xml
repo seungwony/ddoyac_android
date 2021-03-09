@@ -17,6 +17,9 @@
         android:screenOrientation="portrait"
         android:theme="@style/Theme.Ddoyac">
 
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="ocr" />
 
         <activity
             android:screenOrientation="portrait"

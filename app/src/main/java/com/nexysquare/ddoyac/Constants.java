@@ -17,7 +17,7 @@ public class Constants {
     final public static int LENS_BACK = 987654;
     final public static int LENS_FRONT = 876543;
 
-    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
+    public static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.7f;
 
     public final static String[] COLORS = {
             "빨강",
