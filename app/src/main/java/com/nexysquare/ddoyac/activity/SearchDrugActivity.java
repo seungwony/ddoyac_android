@@ -1356,19 +1356,32 @@ public class SearchDrugActivity extends AppCompatActivity {
 //                    }
 //                }
 
-                Collections.sort(items, new Comparator<DrugParcelable>() {
-                    @Override
-                    public int compare(DrugParcelable o1, DrugParcelable o2) {
-                        if(o1.getMaxMatchedCount() < o2.getMaxMatchedCount()){
-                            return 1;
-                        }else if(o1.getMaxMatchedCount()> o2.getMaxMatchedCount()){
-                            return -1;
-                        }
 
-                        return 0;
-                    }
-                });
-                adapter.notifyDataSetChanged();
+
+                try{
+                    Collections.sort(items, new Comparator<DrugParcelable>() {
+                        @Override
+                        public int compare(DrugParcelable o1, DrugParcelable o2) {
+                            if(o1.getMaxMatchedCount() < o2.getMaxMatchedCount()){
+                                return 1;
+                            }else if(o1.getMaxMatchedCount()> o2.getMaxMatchedCount()){
+                                return -1;
+                            }
+
+                            return 0;
+                        }
+                    });
+                    adapter.notifyDataSetChanged();
+
+
+                }catch (Exception ex){
+                    Log.e(TAG, ex.getMessage());
+                }
+
+
+
+
+
             }else if(action.equals("extract_des_json_complete")){
                 des_json = intent.getStringExtra("json");
 
