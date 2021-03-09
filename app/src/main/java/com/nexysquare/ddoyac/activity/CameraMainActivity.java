@@ -137,6 +137,11 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
     ProcessCameraProvider mCameraProvider;
     Canvas canvas;
     Paint paint;
+    boolean islightOn = false;
+    boolean isAiProcessing = true;
+    boolean isShapeClassificationProcessing = true;
+    boolean isColorExtracting = true;
+
     int cameraHeight, cameraWidth, xOffset, yOffset, boxWidth, boxHeight;
     private boolean inferencing = false;
     private enum DetectorMode {
@@ -255,6 +260,11 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         search_img_btn = findViewById(R.id.search_img_btn);
 
         ImageButton more_btn = findViewById(R.id.more_btn);
+        ImageButton light_btn= findViewById(R.id.light_btn);
+        ImageButton ai_mode_btn = findViewById(R.id.ai_mode_btn);
+
+        ImageButton shape_filter_btn = findViewById(R.id.shape_filter_btn);
+        ImageButton color_pick_btn = findViewById(R.id.color_pick_btn);
 //        search_ocr_btn.setTag("ocr");
 //        search_img_btn.setTag("img");
         //Start Camera
@@ -284,7 +294,16 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         textView.setOnClickListener(this);
         filter_clear_btn.setOnClickListener(this);
         more_btn.setOnClickListener(this);
+        ai_mode_btn.setOnClickListener(this);
+        color_pick_btn.setOnClickListener(this);
+        shape_filter_btn.setOnClickListener(this);
+        shape_info_txt.setOnClickListener(this);
+        extract_color_info_txt.setOnClickListener(this);
 //        search_cardview.setOnClickListener(this);
+
+        if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)){
+            light_btn.setOnClickListener(this);
+        }
 
 
         search_btn.setOnLongClickListener(new View.OnLongClickListener() {
@@ -317,12 +336,12 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 //            detector.useBestOption(compactList.getBestOptionsForThisDevice());
 
-            detector.setNumThreads(2);
+            detector.setNumThreads(4);
             Log.d(TAG,"isDelegateSupportedOnThisDevice true");
 
         }else {
            // detector.useNNAPI();
-            detector.setNumThreads(2);
+            detector.setNumThreads(4);
             Log.d(TAG,"isDelegateSupportedOnThisDevice false");
         }
 //        detector.useNNAPI();
@@ -802,13 +821,10 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                 //Getting bitmap from FirebaseVisionImage Object
 //                Bitmap bmp = images.getBitmap();
 
-
-                int layout_w = 320;
-                int layout_h = 240;
-
-
-                layout_w = mCameraView.getWidth();
-                layout_h = mCameraView.getHeight();
+                if(!isAiProcessing){
+                    imageProxy.close();
+                    return;
+                }
 
 
 
@@ -936,6 +952,8 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 
 
+
+
                 if(!inferencing){
                     Bitmap finalBitmap = bitmap;
                     runInBackground(new Runnable() {
@@ -1045,7 +1063,10 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
                             MultiBoxTracker tracker = new MultiBoxTracker(graphics_overlay, getApplicationContext());
 
-                            tracker.trackResults(mappedRecognitions, croppedBitmap);
+                            if(isShapeClassificationProcessing){
+                                tracker.trackResults(mappedRecognitions, croppedBitmap);
+                            }
+
 
 
 
@@ -1071,24 +1092,34 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                                     graphics_overlay.clear();
                                     graphics_overlay.add(tracker);
                                     if(finalBm_last !=null){
-                                        cropImg.setImageBitmap(finalBm_last);
+//                                        if(isShapeClassificationProcessing) {
+                                            cropImg.setImageBitmap(finalBm_last);
 
-                                        detectBitmap = finalBm_last;
+                                            detectBitmap = finalBm_last;
+//                                        }
                                     }
 
 
 
                                     if(finalFocusBitmap !=null){
-                                        String colors = getMostCommonColour(finalFocusBitmap);
-                                        String colors_info = String.format(getString(R.string.color_form), colors);
 
-                                        extract_color_info_txt.setText(colors_info);
+                                        if(isColorExtracting){
+                                            String colors = getMostCommonColour(finalFocusBitmap);
+                                            String colors_info = String.format(getString(R.string.color_form), colors);
+
+                                            extract_color_info_txt.setText(colors);
+                                        }
+
 
                                     }
                                     if(!finalStr_result.equals("")){
-                                        String shape_info = String.format(getString(R.string.shape_form), LabelHelper.intuitionLabel(finalStr_result));
-                                        shape_info_txt.setText(shape_info);
-                                        detectedShape = finalStr_result;
+                                        if(isShapeClassificationProcessing){
+                                            String shape_info = LabelHelper.intuitionLabel(finalStr_result);
+                                            shape_info_txt.setText(shape_info);
+                                            detectedShape = finalStr_result;
+                                        }
+
+
                                     }
 
                                     inferencing = false;
@@ -1117,84 +1148,6 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                 }
 
 
-
-//                //initializing FirebaseVisionTextRecognizer object
-//                FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
-//                        .getOnDeviceTextRecognizer();
-//                //Passing FirebaseVisionImage Object created from the cropped bitmap
-//
-//                Task<FirebaseVisionText> result = detector.processImage(FirebaseVisionImage.fromBitmap(bitmap))
-//                        .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-//                            @Override
-//                            public void onSuccess(FirebaseVisionText firebaseVisionText) {
-//                                // Task completed successfully
-//                                // ...
-//
-//                                graphics_overlay_ocr.clear();
-//
-//
-//
-////                                firebaseVisionText.getTextBlocks()
-//
-//
-//                                //getting decoded text
-//                                String text = firebaseVisionText.getText();
-//                                //Setting the decoded text in the texttview
-//
-//                                //for getting blocks and line elements
-//                                for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
-//                                    String blockText = block.getText();
-//
-//                                   if(block.getBoundingBox()!=null){
-//                                       int top = block.getBoundingBox().top;
-//                                       int left = block.getBoundingBox().left;
-//                                       int right = block.getBoundingBox().right;
-//                                       int bottom = block.getBoundingBox().bottom;
-//
-//                                       if(left> 0 && top > 0 && right - left > 0 && bottom - top > 0){
-//                                           final Bitmap _bm = Bitmap.createBitmap(finalBitmap1, left, top, right - left, bottom - top);
-//                                           runOnUiThread(new Runnable() {
-//                                               @Override
-//                                               public void run() {
-//    //                                               cropImg.setImageBitmap(_bm);
-//                                                   foundKeyword= text;
-//
-//    //                                               String colors = getMostCommonColour(_bm);
-//                                                   textView.setText(text);
-//
-//                                               }
-//                                           });
-//                                       }
-//
-//                                   }
-//
-//                                    for (FirebaseVisionText.Line line : block.getLines()) {
-//                                        String lineText = line.getText();
-//                                        for (FirebaseVisionText.Element element : line.getElements()) {
-//                                            String elementText = element.getText();
-//
-//                                            GraphicOverlay.Graphic textGraphic = new TextGraphic(graphics_overlay_ocr, element);
-//                                            graphics_overlay_ocr.add(textGraphic);
-//
-//
-//
-//                                        }
-//                                    }
-//                                }
-//
-//                                imageProxy.close();
-//                            }
-//                        })
-//                        .addOnFailureListener(
-//                                new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        // Task failed with an exception
-//                                        // ...
-//                                        Log.e("Error", e.toString());
-//                                        imageProxy.close();
-//                                    }
-//                                });
             }
 
 
@@ -1781,8 +1734,8 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
             showShowcaseImageButton();
         }else if(v.getId() == R.id.filter_clear_btn){
 
-            extract_color_info_txt.setText("");
-            shape_info_txt.setText(getString(R.string.guide_init_user));
+            extract_color_info_txt.setText(getString(R.string.guide_init_user));
+            shape_info_txt.setText("");
 
             extract_colors.clear();
             textView.setText("");
@@ -1807,11 +1760,77 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         }
         else if(v.getId() ==R.id.extra_menu){
             extra_menu.setVisibility(View.GONE);
+        }else if(v.getId() == R.id.light_btn){
+
+
+
+            islightOn =  !islightOn;
+            cControl.enableTorch(islightOn);
+
+            ImageButton imgBtn = (ImageButton)v;
+            if(islightOn){
+                imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.flashlight));
+//                imgBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_fill_pri));
+            }else{
+                imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.flashlight_off));
+//                imgBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_fill_gray));
+            }
+
+        }else if(v.getId() == R.id.ai_mode_btn){
+            isAiProcessing = !isAiProcessing;
+            ImageButton imgBtn = (ImageButton)v;
+            if(isAiProcessing){
+                imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_ai_chip));
+
+                extract_color_info_txt.setText(getString(R.string.guide_init_user));
+
+//                imgBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_fill_pri));
+            }else{
+                extract_color_info_txt.setText("");
+                shape_info_txt.setText(getString(R.string.off_auto_classification));
+
+//                extract_colors.clear();
+//                textView.setText("");
+//                detectedShape = null;
+//                foundKeyword = null;
+
+
+                imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_ai_chip_off));
+//                imgBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_fill_gray));
+            }
+        }else if(v.getId() == R.id.shape_filter_btn || v.getId() == R.id.shape_info_txt){
+            isShapeClassificationProcessing = !isShapeClassificationProcessing;
+            ImageButton imgBtn = findViewById(R.id.shape_filter_btn);
+            if(isShapeClassificationProcessing){
+                shape_info_txt.setText("");
+                imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_shape_filter));
+            }else{
+                detectedShape = null;
+                shape_info_txt.setText(getString(R.string.off_auto_shape_classification));
+                imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_shape_filter_off));
+            }
+        }else if(v.getId() == R.id.color_pick_btn || v.getId() == R.id.extract_color_info_txt){
+
+            isColorExtracting = !isColorExtracting;
+            ImageButton imgBtn = findViewById(R.id.color_pick_btn);
+//            extract_colors.clear();
+            if(isColorExtracting){
+                extract_color_info_txt.setText("");
+                extract_color_img.setVisibility(View.VISIBLE);
+                imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_color_dropper_picker));
+            }else{
+                extract_color_img.setVisibility(View.INVISIBLE);
+                extract_colors.clear();
+                extract_color_info_txt.setText(getString(R.string.off_auto_extract_color));
+                imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_color_dropper_picker_off));
+            }
         }
 
 
 
     }
+
+
 
     protected synchronized void runInBackground(final Runnable r) {
         if (inferenceHandler != null) {

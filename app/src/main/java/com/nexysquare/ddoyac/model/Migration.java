@@ -74,14 +74,52 @@ public class Migration implements RealmMigration {
                                 String mark_img_des_front = obj.getString("mark_img_des_front");
                                 String mark_img_des_back = obj.getString("mark_img_des_back");
 
-                                String re_mark_front = obj.getString("mark_front").replaceAll("[^A-Za-z0-9\\s]", "");
 
-                                String re_mark_back = obj.getString("mark_back").replaceAll("[^A-Za-z0-9\\s]", "");
+                                String re_mark_front = obj.getString("mark_front").replaceAll("[^A-Za-z0-9\\s]", "").replaceAll(" ", "");
+
+                                String re_mark_back = obj.getString("mark_back").replaceAll("[^A-Za-z0-9\\s]", "").replaceAll(" ", "");
+
+
+//                                String mark_front = obj.getString("mark_front");
+//                                String mark_back = obj.getString("mark_back");
 
                                 String searchable = p_name+" "+mark_front + " " + mark_back +  " " + re_mark_front+ " "+re_mark_back + " " + mark_img_des_front + " " + mark_img_des_back;
                                 obj.setString("searchable", searchable);
                             }
                         });
+            }else{
+                schema.get("Drug").transform(new RealmObjectSchema.Function() {
+                    @Override
+                    public void apply(DynamicRealmObject obj) {
+                        String p_name = obj.getString("p_name");
+
+                        String mark_front = obj.getString("mark_front");
+
+
+
+
+                        String mark_back = obj.getString("mark_back");
+
+                        String mark_img_des_front = obj.getString("mark_img_des_front");
+                        String mark_img_des_back = obj.getString("mark_img_des_back");
+
+
+                        String re_mark_front = obj.getString("mark_front").replaceAll("[^A-Za-z0-9\\s]", "").replaceAll(" ", "");
+
+                        String re_mark_back = obj.getString("mark_back").replaceAll("[^A-Za-z0-9\\s]", "").replaceAll(" ", "");
+
+
+//                        if(mark_front.equals("YH DXP")){
+//                            Log.d("Migration", p_name + " " + mark_front + " ::::: " +re_mark_front);
+////                        덱스피드연질캡슐(덱시부프로펜) YH DXP ::::: YHDXP
+//                        }
+//                                String mark_front = obj.getString("mark_front");
+//                                String mark_back = obj.getString("mark_back");
+
+                        String searchable = p_name+" "+mark_front + " " + mark_back +  " " + re_mark_front+ " "+re_mark_back + " " + mark_img_des_front + " " + mark_img_des_back;
+                        obj.setString("searchable", searchable);
+                    }
+                });
             }
 
 
@@ -173,7 +211,40 @@ public class Migration implements RealmMigration {
 
                         oldVersion++;
 
+
+                    }else if(oldVersion < 2){
+            schema.get("Drug").transform(new RealmObjectSchema.Function() {
+                @Override
+                public void apply(DynamicRealmObject obj) {
+                    String p_name = obj.getString("p_name");
+
+                    String mark_front = obj.getString("mark_front");
+
+
+
+
+                    String mark_back = obj.getString("mark_back");
+
+                    String mark_img_des_front = obj.getString("mark_img_des_front");
+                    String mark_img_des_back = obj.getString("mark_img_des_back");
+
+
+                    String re_mark_front = obj.getString("mark_front").replaceAll("[^A-Za-z0-9\\s]", "").replaceAll(" ", "");
+
+                    String re_mark_back = obj.getString("mark_back").replaceAll("[^A-Za-z0-9\\s]", "").replaceAll(" ", "");
+
+
+                    if(mark_front.equals("YH DXP")){
+                        Log.d("Migration", p_name + " " + mark_front + " ::::: " +re_mark_front);
                     }
+//                                String mark_front = obj.getString("mark_front");
+//                                String mark_back = obj.getString("mark_back");
+
+                    String searchable = p_name+" "+mark_front + " " + mark_back +  " " + re_mark_front+ " "+re_mark_back + " " + mark_img_des_front + " " + mark_img_des_back;
+                    obj.setString("searchable", searchable);
+                }
+            });
+        }
     }
 
 }

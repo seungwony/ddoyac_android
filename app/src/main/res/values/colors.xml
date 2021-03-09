@@ -17,6 +17,9 @@
     <color name="capture_stroke_inactive">#009688</color>
 
 
+    <color name="main_pri">#009688</color>
+
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 

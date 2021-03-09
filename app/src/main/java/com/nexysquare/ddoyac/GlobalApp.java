@@ -80,7 +80,7 @@ public class GlobalApp extends Application {
 //                .compactOnLaunch()
 //                .readOnly()
                 //.deleteRealmIfMigrationNeeded()
-                .schemaVersion(1)
+                .schemaVersion(2)
 
                 .build();
 

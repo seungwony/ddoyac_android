@@ -333,13 +333,24 @@ public class SearchDrugActivity extends AppCompatActivity {
 
             initChip();
 
+            if(mark!=null){
+                mark = mark.replace("\n", " ");
+                keyword = mark;
+                search_edittext.setText(mark);
+                searchWithFilter();
+            }else{
+                adapter.notifyDataSetChanged();
+            }
+
+
+
 
 //            addAllDrugs(realmResults);
 
 
 //            items.addAll(realmResults);
 
-            adapter.notifyDataSetChanged();
+
 
 //            shapeList();
 
@@ -957,14 +968,34 @@ public class SearchDrugActivity extends AppCompatActivity {
                 query.and();
                 str_query+= ".and()";
             }
+//            query
+//                    .beginGroup()
+//                    .in("color_front", colors_arr)
+//                    .or()
+//                    .in("color_back", colors_arr)
+//                    .endGroup();
+
+
             query
-                    .beginGroup()
-                    .in("color_front", colors_arr)
-                    .or()
-                    .in("color_back", colors_arr)
+                    .beginGroup();
+
+//            for(String color : filter_colors){
+////                query.contains("color_front", )
+//            }
+
+            for(int i = 0; i < filter_colors.size() ; i++){
+                String color = filter_colors.get(i);
+                query.contains("color_front", color)
+                        .or()
+                        .contains("color_back", color);
+
+                if(i + 1 != filter_colors.size()){
+                    query.or();
+                }
+            }
+
+            query
                     .endGroup();
-
-
 
 
             str_query+= ".beginGroup()\n" +

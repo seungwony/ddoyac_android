@@ -59,7 +59,7 @@ public class ColorUtils {
         colorList.add(new ColorName("Green", 0x00, 0x64, 0x00)); //Green
         colorList.add(new ColorName("green, yellow", 0xBD, 0xB7, 0x6B)); //DarkKhaki
         colorList.add(new ColorName("purple, pink", 0x8B, 0x00, 0x8B));//DarkMagenta
-        colorList.add(new ColorName("Green", 0x55, 0x6B, 0x2F));//DarkOliveGreen
+        colorList.add(new ColorName("Green, yellow", 0x55, 0x6B, 0x2F));//DarkOliveGreen
         colorList.add(new ColorName("yellow, brown, red", 0xFF, 0x8C, 0x00));//DarkOrange
         colorList.add(new ColorName("purple, pink", 0x99, 0x32, 0xCC));//DarkOrchid
         colorList.add(new ColorName("red", 0x8B, 0x00, 0x00));//DarkRed
@@ -344,7 +344,7 @@ public class ColorUtils {
 
         colorList.add(new ColorName("DarkMagenta, purple, pink", 0x8B, 0x00, 0x8B));//DarkMagenta
 
-        colorList.add(new ColorName("DarkOliveGreen, Green", 0x55, 0x6B, 0x2F));//DarkOliveGreen
+        colorList.add(new ColorName("DarkOliveGreen, Green, yellow", 0x55, 0x6B, 0x2F));//DarkOliveGreen
 
         colorList.add(new ColorName("DarkOrange, yellow, brown, red", 0xFF, 0x8C, 0x00));//DarkOrange
 

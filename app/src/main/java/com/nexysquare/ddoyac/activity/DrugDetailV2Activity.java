@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonObject;
+import com.nexysquare.ddoyac.GlobalApp;
 import com.nexysquare.ddoyac.fragment.DetailFragment;
 import com.nexysquare.ddoyac.fragment.ReferenceFragment;
 import com.nexysquare.ddoyac.model.Migration;
@@ -112,11 +113,6 @@ public class DrugDetailV2Activity extends AppCompatActivity implements AppBarLay
 
         int p_no = getIntent().getIntExtra("p_no", -1);
         if(p_no >= 0){
-            RealmConfiguration config0 = new RealmConfiguration.Builder()
-                    .assetFile("drugs.realm")
-                    .migration(new Migration())
-                    .schemaVersion(1)
-                    .build();
 
             // You can then manually call Realm.migrateRealm().
 //        try {
@@ -124,7 +120,7 @@ public class DrugDetailV2Activity extends AppCompatActivity implements AppBarLay
 //        } catch (FileNotFoundException ignored) {
 //            // If the Realm file doesn't exist, just ignore.
 //        }
-            Realm realm = Realm.getInstance(config0);
+            Realm realm = Realm.getInstance(GlobalApp.getRealmConfiguration());
             Drug drug = realm.where(Drug.class).equalTo("p_no", p_no).findFirst();
 
             String name = drug.getP_name();

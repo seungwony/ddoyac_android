@@ -69,4 +69,9 @@
     <string name="close_end">다음부터 보지 않습니다.</string>
     <string name="initializing">잠시만 기다려주십시오.</string>
     <string name="clipboard_p_name">품목명을 클립보드에 복사했습니다.</string>
+
+    <string name="off_auto_classification">자동 분류 모드 OFF</string>
+
+    <string name="off_auto_shape_classification">모양 자동 분류 OFF</string>
+    <string name="off_auto_extract_color">색상 추출 OFF</string>
 </resources>
