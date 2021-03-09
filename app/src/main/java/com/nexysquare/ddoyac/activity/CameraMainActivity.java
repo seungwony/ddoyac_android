@@ -1,6 +1,7 @@
 package com.nexysquare.ddoyac.activity;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +37,8 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -189,7 +192,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
     private String MODEL_PATH = "drugscan224s-fp16.tflite";
 
-    private TextView shape_info_txt, extract_color_info_txt, search_type_text;
+    private TextView shape_info_txt, extract_color_info_txt, search_type_text, warning_msg;
 
     private Button search_ocr_btn, search_img_btn;
 
@@ -227,7 +230,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camerax_main);
 
-
+        warning_msg = findViewById(R.id.warning_msg);
         boolean initUser = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("initUser", true);
         if(initUser){
             PermissionIntroActivity.open(getApplicationContext());
@@ -391,6 +394,41 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
             }, 300);
 
 
+        }
+
+        if(warning_msg.getVisibility() == View.VISIBLE){
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                    warning_msg.setVisibility(View.GONE);
+                    warning_msg.animate().alpha(1).setDuration(800).setInterpolator(new DecelerateInterpolator()).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            warning_msg.animate().alpha(0).setDuration(800).setInterpolator(new AccelerateInterpolator()).setListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    warning_msg.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animation) {
+
+                                }
+                            }).start();
+                        }
+                    }).start();
+                }
+            }, 2000);
         }
     }
 
@@ -954,6 +992,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 
 
+
                 if(!inferencing){
                     Bitmap finalBitmap = bitmap;
                     runInBackground(new Runnable() {
@@ -1089,6 +1128,9 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+
+
+
                                     graphics_overlay.clear();
                                     graphics_overlay.add(tracker);
                                     if(finalBm_last !=null){
@@ -1098,6 +1140,10 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                                             detectBitmap = finalBm_last;
 //                                        }
                                     }
+
+
+
+
 
 
 
@@ -1734,7 +1780,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
             showShowcaseImageButton();
         }else if(v.getId() == R.id.filter_clear_btn){
 
-            extract_color_info_txt.setText(getString(R.string.guide_init_user));
+//            extract_color_info_txt.setText(getString(R.string.guide_init_user));
             shape_info_txt.setText("");
 
             extract_colors.clear();
@@ -1782,7 +1828,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
             if(isAiProcessing){
                 imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_ai_chip));
 
-                extract_color_info_txt.setText(getString(R.string.guide_init_user));
+//                extract_color_info_txt.setText(getString(R.string.guide_init_user));
 
 //                imgBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_fill_pri));
             }else{

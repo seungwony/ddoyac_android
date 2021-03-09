@@ -92,13 +92,145 @@
 
             </com.google.android.material.chip.ChipGroup>
 
-            <TextView
-                style="@style/TextAppearance.MaterialComponents.Body1"
+            <LinearLayout
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:text="색상"
-                />
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="색상"
+                    />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/color_picker_checkbox"
+                    android:layout_width="wrap_content"
+                    android:checked="true"
+                    android:layout_marginStart="@dimen/view_margin_spacing"
+                    android:text="Show Color Picker"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+
+
+                android:id="@+id/intuition_color_picker"
+                android:layout_margin="@dimen/view_spacing"
+
+                android:layout_width="match_parent"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="2dp"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_margin="@dimen/view_spacing"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <CheckedTextView
+                    android:checked="true"
+                    android:visibility="gone"
+                    android:layout_marginStart="@dimen/view_margin_spacing"
+                    android:layout_marginEnd="@dimen/view_margin_spacing"
+                    android:text="Intuition Color Picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:weightSum="4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/color_picker_red_btn"
+                        android:text="붉은색"
+                        android:textColor="@color/d_red"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:id="@+id/color_picker_orange_btn"
+                        android:text="주황색"
+                        android:textColor="@color/d_orange"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:id="@+id/color_picker_yellow_btn"
+                        android:text="노란색"
+                        android:textColor="@color/d_yellow"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:id="@+id/color_picker_green_btn"
+                        android:text="녹색"
+                        android:textColor="@color/d_green"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:weightSum="4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/color_picker_blue_btn"
+                        android:text="파란색"
+                        android:textColor="@color/d_blue"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:id="@+id/color_picker_purple_btn"
+                        android:text="보라색"
+                        android:textColor="@color/d_purple"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:id="@+id/color_picker_bright_btn"
+                        android:text="밝은색"
+                        android:textColor="@color/darker_gray"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:id="@+id/color_picker_dark_btn"
+                        android:text="어두운색"
+                        android:textColor="@color/d_black"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/color_chip_group"

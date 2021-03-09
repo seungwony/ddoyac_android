@@ -12,12 +12,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
@@ -50,6 +52,7 @@ public class SearchFilterActivity extends AppCompatActivity implements View.OnCl
     private String str_mark_img;
     private ImageView mark_img;
 
+    private View intuition_color_picker;
 
     public static void open(Activity activity, View v, String keyword, ArrayList<String> filter_shapes, ArrayList<String> filter_colors, String mark_img, int REQUEST_FILTER) {
 
@@ -112,11 +115,13 @@ public class SearchFilterActivity extends AppCompatActivity implements View.OnCl
 //                onBackPressed();
 //            }
 //        });
-
+        intuition_color_picker = findViewById(R.id.intuition_color_picker);
         shape_chip_group = findViewById(R.id.shape_chip_group);
         color_chip_group = findViewById(R.id.color_chip_group);
         select_mark_btn = findViewById(R.id.select_mark_btn);
         mark_img = findViewById(R.id.mark_img);
+
+        AppCompatCheckBox color_picker_checkbox = findViewById(R.id.color_picker_checkbox);
 
         Button reset_filter_btn = findViewById(R.id.reset_filter_btn);
         Button apply_filter_btn = findViewById(R.id.apply_filter_btn);
@@ -138,6 +143,8 @@ public class SearchFilterActivity extends AppCompatActivity implements View.OnCl
         reset_filter_btn.setOnClickListener(this);
         apply_filter_btn.setOnClickListener(this);
         initFilterList();
+
+
 
     }
 
@@ -177,10 +184,31 @@ public class SearchFilterActivity extends AppCompatActivity implements View.OnCl
 
             }
         }
+        AppCompatCheckBox color_picker_checkbox = findViewById(R.id.color_picker_checkbox);
+        color_picker_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    showIntuitionColorPicker();
+                }else{
+                    hideIntuitionColorPicker();
+                }
+            }
+        });
 
         ArrayList<String> colors = getIntent().getStringArrayListExtra("colors");
 
         if(colors!=null){
+            if(colors.size()>0){
+//                hideIntuitionColorPicker();
+                color_picker_checkbox.setChecked(false);
+            } else{
+//                showIntuitionColorPicker();
+                color_chip_group.setVisibility(View.GONE);
+                color_picker_checkbox.setChecked(true);
+            }
+
+
             for(String color : colors){
 //                int colorIdx = getIdxColor(color);
 //                if(colorIdx!=-1){
@@ -195,6 +223,11 @@ public class SearchFilterActivity extends AppCompatActivity implements View.OnCl
                     }
                 }
             }
+        }else{
+
+            color_picker_checkbox.setChecked(true);
+//            showIntuitionColorPicker();
+            color_chip_group.setVisibility(View.GONE);
         }
 
         str_mark_img = getIntent().getStringExtra("mark_img");
@@ -220,7 +253,101 @@ public class SearchFilterActivity extends AppCompatActivity implements View.OnCl
         return -1;
     }
 
+    private void showIntuitionColorPicker(){
+        intuition_color_picker.setVisibility(View.VISIBLE);
 
+
+        Button color_picker_red_btn = findViewById(R.id.color_picker_red_btn);
+        Button color_picker_orange_btn = findViewById(R.id.color_picker_orange_btn);
+        Button color_picker_yellow_btn = findViewById(R.id.color_picker_yellow_btn);
+        Button color_picker_green_btn = findViewById(R.id.color_picker_green_btn);
+        Button color_picker_blue_btn = findViewById(R.id.color_picker_blue_btn);
+        Button color_picker_purple_btn = findViewById(R.id.color_picker_purple_btn);
+        Button color_picker_bright_btn = findViewById(R.id.color_picker_bright_btn);
+        Button color_picker_dark_btn = findViewById(R.id.color_picker_dark_btn);
+
+
+        color_picker_red_btn.setOnClickListener(colorPicker);
+        color_picker_orange_btn.setOnClickListener(colorPicker);
+        color_picker_yellow_btn.setOnClickListener(colorPicker);
+        color_picker_green_btn.setOnClickListener(colorPicker);
+        color_picker_blue_btn.setOnClickListener(colorPicker);
+        color_picker_purple_btn.setOnClickListener(colorPicker);
+        color_picker_bright_btn.setOnClickListener(colorPicker);
+        color_picker_dark_btn.setOnClickListener(colorPicker);
+    }
+
+    View.OnClickListener colorPicker = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            color_chip_group.setVisibility(View.VISIBLE);
+            ArrayList<String> colors = new ArrayList<>();
+            if(v.getId() == R.id.color_picker_red_btn){
+                colors.add("빨강");
+                colors.add("주황");
+                colors.add("갈색");
+            }else if(v.getId() == R.id.color_picker_orange_btn){
+                colors.add("빨강");
+                colors.add("주황");
+                colors.add("갈색");
+                colors.add("노랑");
+            }else if(v.getId() == R.id.color_picker_yellow_btn){
+                colors.add("주황");
+                colors.add("갈색");
+                colors.add("노랑");
+            }else if(v.getId() == R.id.color_picker_green_btn){
+                colors.add("연두");
+                colors.add("청록");
+                colors.add("초록");
+            }else if(v.getId() == R.id.color_picker_blue_btn){
+                colors.add("파랑");
+                colors.add("청록");
+                colors.add("남색");
+            }else if(v.getId() == R.id.color_picker_purple_btn){
+                colors.add("보라");
+                colors.add("분홍");
+                colors.add("자주");
+            }else if(v.getId() == R.id.color_picker_bright_btn){
+                colors.add("하양");
+                colors.add("노랑");
+                colors.add("투명");
+            }else if(v.getId() == R.id.color_picker_dark_btn){
+                colors.add("갈색");
+                colors.add("검정");
+                colors.add("진한");
+                colors.add("남색");
+                colors.add("회색");
+            }
+
+            clearColorSelected();
+
+            for(String color : colors){
+
+                for (int i=0; i<color_chip_group.getChildCount();i++){
+                    Chip chip = (Chip)color_chip_group.getChildAt(i);
+                    if(chip.getText().equals(color)){
+                        chip.setChecked(true);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+    };
+
+    private void clearColorSelected(){
+        for (int i=0; i<color_chip_group.getChildCount();i++){
+            Chip chip = (Chip)color_chip_group.getChildAt(i);
+            chip.setChecked(false);
+        }
+    }
+
+    private void hideIntuitionColorPicker(){
+        intuition_color_picker.setVisibility(View.GONE);
+        color_chip_group.setVisibility(View.VISIBLE);
+//        color_chip_group.setVisibility(View.VISIBLE);
+    }
 
     private void extractFilterList(){
         Realm realm = Realm.getInstance(GlobalApp.getRealmConfiguration());

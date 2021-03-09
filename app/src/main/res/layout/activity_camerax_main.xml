@@ -57,6 +57,24 @@
         android:layout_height="0dp"
         />
 
+    <TextView
+        android:id="@+id/warning_msg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.3"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:padding="@dimen/view_spacing"
+        android:background="@drawable/rounded_fill_trans_black"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/guide_init_user"
+        />
 
 
     <LinearLayout
@@ -214,7 +232,7 @@
                     android:layout_height="40dp"/>
                 <TextView
 
-                    android:text="@string/guide_init_user"
+                    android:text=""
                     android:textColor="@color/darker_gray"
                     android:id="@+id/extract_color_info_txt"
                     android:layout_width="wrap_content"
