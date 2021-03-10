@@ -253,6 +253,9 @@ public class SearchDrugActivity extends AppCompatActivity {
             items.clear();
 
 
+
+
+
         String shape = getIntent().getStringExtra("shape");
         String mark = getIntent().getStringExtra("mark");
         ArrayList<String> colors = getIntent().getStringArrayListExtra("colors");
@@ -615,6 +618,8 @@ public class SearchDrugActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        items.clear();
+        realmResults = null;
         recyclerView.setAdapter(null);
         realm.close();
     }
@@ -1217,12 +1222,15 @@ public class SearchDrugActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "onResume :: Internal OpenCV library not found.");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
+                Log.d(TAG, "onResume :: Internal OpenCV library not found.");
+                OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
+
         } else {
-            Log.d(TAG, "onResum :: OpenCV library found inside package. Using it!");
-            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+                Log.d(TAG, "onResum :: OpenCV library found inside package. Using it!");
+                mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+
         }
 
         IntentFilter intentFilter = new IntentFilter();
@@ -1231,6 +1239,9 @@ public class SearchDrugActivity extends AppCompatActivity {
         intentFilter.addAction("extract_complete");
         intentFilter.addAction("extract_des_json_complete");
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, intentFilter);
+
+        Log.d(TAG, "items.size() : " +  items.size());
+        adapter.notifyDataSetChanged();
     }
     @Override
     protected void onPause() {
@@ -1418,9 +1429,9 @@ public class SearchDrugActivity extends AppCompatActivity {
 
 //        imgSearchHandler.removeCallbacks(searchRunnable);
 
+        Log.d(TAG, "onStop");
 
-        items.clear();
-        realmResults = null;
+
     }
 
 

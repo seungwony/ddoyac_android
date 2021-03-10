@@ -265,7 +265,7 @@ public class CompareTaskV2 extends BackgroundTask {
                 }
 
 
-                if(i % 100 == 0){
+                if(i % 1000 == 0){
                     //notify data
 
 //                            int finalNum = num - 1;
