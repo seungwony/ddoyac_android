@@ -19,6 +19,7 @@
         android:installLocation="auto"
         android:networkSecurityConfig="@xml/network_security_config"
         android:screenOrientation="portrait"
+
         android:theme="@style/Theme.Ddoyac">
         <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="ocr"/>
         <meta-data
@@ -49,10 +50,16 @@
             android:screenOrientation="portrait"
             />
 
+        <activity android:name="com.nexysquare.ddoyac.activity.StaticImageActivity"
+            android:theme="@style/Theme.Ddoyac.NoActionBar"
+            android:screenOrientation="portrait"
+            />
+
         <activity android:name="com.nexysquare.ddoyac.activity.PermissionIntroActivity"
             android:theme="@style/Theme.Ddoyac.NoActionBar"
             android:screenOrientation="portrait"
             />
+
         <activity android:name="com.nexysquare.ddoyac.activity.AppInfoActivity"
             android:theme="@style/Theme.Ddoyac.NoActionBar"
             android:screenOrientation="portrait"

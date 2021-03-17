@@ -3,15 +3,18 @@ package com.nexysquare.ddoyac.activity;
 import android.Manifest;
 import android.animation.Animator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
+import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
@@ -21,6 +24,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.YuvImage;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +32,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
@@ -37,6 +42,9 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
@@ -48,11 +56,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraControl;
 import androidx.camera.core.CameraInfo;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.CameraX;
 import androidx.camera.core.FocusMeteringAction;
 import androidx.camera.core.FocusMeteringResult;
 import androidx.camera.core.ImageAnalysis;
@@ -100,13 +110,17 @@ import com.nexysquare.ddoyac.tracking.MultiBoxTracker;
 import com.nexysquare.ddoyac.util.ImageConversionUtil;
 import com.nexysquare.ddoyac.util.LabelHelper;
 import com.nexysquare.ddoyac.view.ColorCircleDrawable;
+import com.yalantis.ucrop.UCrop;
 
 import org.tensorflow.lite.gpu.CompatibilityList;
 import org.tensorflow.lite.gpu.GpuDelegate;
 import org.tensorflow.lite.nnapi.NnApiDelegate;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -130,7 +144,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 public class CameraMainActivity extends AppCompatActivity implements SurfaceHolder.Callback, View.OnClickListener {
     private final static String TAG  = "CameraXOCRActivity";
     private static final int PERMISSIONS_REQUEST = 1;
-
+    private static final int PICK_PHOTO_REQUEST_CODE = 101;
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
     private ChipGroup filter_group;
     EditText textView;
@@ -190,8 +204,6 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
 
-    private String MODEL_PATH = "drugscan224s-fp16.tflite";
-
     private TextView shape_info_txt, extract_color_info_txt, search_type_text, warning_msg;
 
     private Button search_ocr_btn, search_img_btn;
@@ -199,6 +211,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
     FancyShowCaseView searchFancyShowcaseView;
     private View search_expanded_box;
     private Bitmap detectBitmap;
+
 
     private View extra_menu;
     /**
@@ -245,6 +258,9 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         View keyword_search_btn = extra_menu.findViewById(R.id.keyword_search_btn);
         View app_info_btn = extra_menu.findViewById(R.id.app_info_btn);
         View feedback_btn = extra_menu.findViewById(R.id.feedback_btn);
+
+
+
         textView = findViewById(R.id.text);
         filter_group = findViewById(R.id.filter_group);
         graphics_overlay = findViewById(R.id.graphics_overlay);
@@ -262,6 +278,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         search_ocr_btn = findViewById(R.id.search_ocr_btn);
         search_img_btn = findViewById(R.id.search_img_btn);
 
+        ImageButton img_lib_btn = findViewById(R.id.img_lib_btn);
         ImageButton more_btn = findViewById(R.id.more_btn);
         ImageButton light_btn= findViewById(R.id.light_btn);
         ImageButton ai_mode_btn = findViewById(R.id.ai_mode_btn);
@@ -302,7 +319,21 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         shape_filter_btn.setOnClickListener(this);
         shape_info_txt.setOnClickListener(this);
         extract_color_info_txt.setOnClickListener(this);
+        img_lib_btn.setOnClickListener(this);
+        extract_color_img.setOnClickListener(this);
 //        search_cardview.setOnClickListener(this);
+
+        extract_color_img.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String color = extract_color_info_txt.getText().toString();
+                if(color!=null && !color.equals("")){
+                    Toast.makeText(getApplicationContext(), color, Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
+            }
+        });
 
         if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)){
             light_btn.setOnClickListener(this);
@@ -313,12 +344,12 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
             @Override
             public boolean onLongClick(View v) {
                 SearchDrugActivity.open(CameraMainActivity.this, textView);
-                return false;
+                return true;
             }
         });
 
         try {
-            detector = DetectorFactory.getDetector(getAssets(), MODEL_PATH);
+            detector = DetectorFactory.getDetector(getAssets(), Constants.MODEL_PATH);
         } catch (final IOException e) {
             e.printStackTrace();
             Log.e(e.getMessage(), "Exception initializing classifier!");
@@ -380,7 +411,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 //                });
         testChip();
 
-
+//        lastImgFromGallery();
 
 
         boolean hasShownShowcase = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("has_shown_showcase", false);
@@ -682,6 +713,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
             filter_group.removeView(currentChild);
         }
 
+
 //        for(int i : ids){
 //            filter_group.removeViewAt(i);
 //        }
@@ -690,8 +722,6 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 //            Log.d("Chip", "id : " + id);
 //            filter_group.removeViewAt(id);
 //        }
-
-
 
     }
     private void testChip(){
@@ -791,6 +821,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build();
+
 
         preview.setSurfaceProvider(mCameraView.createSurfaceProvider());
 
@@ -1190,7 +1221,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 //                            InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
                     // Pass image to an ML Kit Vision API
                     // ...
-                    recognizeText(inputImage, bitmap, imageProxy);
+                    recognizeText(inputImage, imageProxy);
                 }
 
 
@@ -1198,9 +1229,10 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 
         });
+        cameraProvider.unbindAll();
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, imageAnalysis, preview);
 
-
+//        camera.setLensFacing(CameraX.LensFacing.BACK)
         cControl = camera.getCameraControl();
         cInfo = camera.getCameraInfo();
 
@@ -1272,7 +1304,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 
 
-    private void recognizeText(InputImage image, Bitmap finalBitmap,ImageProxy imageProxy) {
+    private void recognizeText(InputImage image,ImageProxy imageProxy) {
 
         // [START get_detector_default]
         TextRecognizer recognizer = TextRecognition.getClient();
@@ -1345,9 +1377,6 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
                             }
 
-
-
-
 //                                firebaseVisionText.getTextBlocks()
                                 //getting decoded text
 //                                String text = firebaseVisionText.getText();
@@ -1377,7 +1406,6 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 //                                                }
 //                                            });
 //                                        }
-//
 //                                    }
 //
 //                                    for (FirebaseVisionText.Line line : block.getLines()) {
@@ -1387,8 +1415,6 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 //
 //                                            GraphicOverlay.Graphic textGraphic = new TextGraphic(graphics_overlay_ocr, element);
 //                                            graphics_overlay_ocr.add(textGraphic);
-//
-//
 //
 //                                        }
 //                                    }
@@ -1797,7 +1823,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                 extra_menu.setVisibility(View.VISIBLE);
             }
         }else if(v.getId() ==R.id.keyword_search_btn){
-            SearchDrugActivity.open(getApplicationContext());
+            SearchDrugActivity.open(CameraMainActivity.this, textView);
         }else if(v.getId() ==R.id.feedback_btn){
             send_email();
         }
@@ -1833,6 +1859,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 //                imgBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.rounded_fill_pri));
             }else{
                 extract_color_info_txt.setText("");
+                extract_color_img.setImageBitmap(null);
                 shape_info_txt.setText(getString(R.string.off_auto_classification));
 
 //                extract_colors.clear();
@@ -1855,21 +1882,28 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                 shape_info_txt.setText(getString(R.string.off_auto_shape_classification));
                 imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_shape_filter_off));
             }
-        }else if(v.getId() == R.id.color_pick_btn || v.getId() == R.id.extract_color_info_txt){
+        }else if(v.getId() == R.id.color_pick_btn || v.getId() == R.id.extract_color_info_txt || v.getId() == R.id.extract_color_img){
 
             isColorExtracting = !isColorExtracting;
             ImageButton imgBtn = findViewById(R.id.color_pick_btn);
 //            extract_colors.clear();
             if(isColorExtracting){
+                extract_color_img.setImageBitmap(null);
                 extract_color_info_txt.setText("");
                 extract_color_img.setVisibility(View.VISIBLE);
+                extract_color_info_txt.setVisibility(View.GONE);
                 imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_color_dropper_picker));
             }else{
-                extract_color_img.setVisibility(View.INVISIBLE);
+                extract_color_info_txt.setVisibility(View.VISIBLE);
+                extract_color_img.setVisibility(View.GONE);
                 extract_colors.clear();
                 extract_color_info_txt.setText(getString(R.string.off_auto_extract_color));
                 imgBtn.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_color_dropper_picker_off));
             }
+        }else if(v.getId() == R.id.img_lib_btn){
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent, PICK_PHOTO_REQUEST_CODE);
         }
 
 
@@ -1918,6 +1952,146 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
             startActivity(Intent.createChooser(i, "[또약] 피드백"));
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getApplicationContext(), "이메일 관련 어플이 설치되어 있지 않았습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_PHOTO_REQUEST_CODE){
+
+
+
+            if (resultCode == RESULT_OK) {
+
+
+                Uri selectedImage = data.getData();
+
+                startCrop(selectedImage);
+                try {
+                    InputStream imageStream = getContentResolver().openInputStream(
+                            selectedImage);
+
+
+                    Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+//                    Bitmap fastblur = BitmapUtil.fastblur(selectedImageBitmap, (float)0.8, 2);
+//                    Bitmap resized = BitmapUtil.resizeBitmapImage(selectedImageBitmap, 160);
+
+
+//                    Bitmap focusBitmap = BitmapUtil.fixedSizeWithCenterCrop50x50(bitmap);
+//                    preview_img.setImageBitmap(bitmap);
+//                    preview_img.invalidate();
+//
+//                    cropped_preview_img.setImageBitmap(focusBitmap);
+//                    cropped_preview_img.invalidate();
+//
+//                    getMostCommonColour(focusBitmap);
+
+
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        }else if(requestCode == UCrop.REQUEST_CROP){
+            if (resultCode == RESULT_OK) {
+                handleCropResult(data);
+            }
+        }else if (resultCode == UCrop.RESULT_ERROR){
+            handleCropError(data);
+        }
+
+    }
+
+    private void handleCropResult(@NonNull Intent result) {
+        final Uri resultUri = UCrop.getOutput(result);
+        if (resultUri != null) {
+            StaticImageActivity.open(getApplicationContext(), resultUri);
+
+
+        } else {
+            Toast.makeText(this, R.string.toast_cannot_retrieve_cropped_image, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    private void handleCropError(@NonNull Intent result) {
+        final Throwable cropError = UCrop.getError(result);
+        if (cropError != null) {
+            Log.e(TAG, "handleCropError: ", cropError);
+            Toast.makeText(this, cropError.getMessage(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, R.string.toast_unexpected_error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startCrop(@NonNull Uri uri) {
+
+
+//        CropImage.activity(uri)
+//                .start(this);
+
+
+
+        // get width and height
+        int size = getScreenWidth(this);
+
+        String destinationFileName = "cropPickedImage.png";
+
+
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
+
+
+        UCrop.Options options = new UCrop.Options();
+
+        options.setCompressionFormat(Bitmap.CompressFormat.PNG);
+        options.setCompressionQuality(100);
+
+        uCrop.withAspectRatio(1,1).withOptions(options);
+        uCrop.withMaxResultSize(size, size);
+
+//        uCrop = basisConfig(uCrop);
+//        uCrop = advancedConfig(uCrop);
+
+        uCrop.start(this);
+
+    }
+
+    public static int getScreenWidth(@NonNull Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = activity.getWindowManager().getCurrentWindowMetrics();
+            Insets insets = windowMetrics.getWindowInsets()
+                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+            return windowMetrics.getBounds().width() - insets.left - insets.right;
+        } else {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            return displayMetrics.widthPixels;
+        }
+    }
+
+    private void lastImgFromGallery(){
+        String[] projection = new String[]{
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.MIME_TYPE
+        };
+        final Cursor cursor = getContentResolver()
+                .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                        null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+
+// Put it in the image view
+        if (cursor.moveToFirst()) {
+            final ImageView imageView = (ImageView) findViewById(R.id.img_lib_btn);
+            String imageLocation = cursor.getString(1);
+            File imageFile = new File(imageLocation);
+            if (imageFile.exists()) {   // TODO: is there a better way to do this?
+                Bitmap bm = BitmapFactory.decodeFile(imageLocation);
+                imageView.setImageBitmap(bm);
+            }
         }
     }
 }

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <SurfaceView
         android:id="@+id/overlay"
@@ -31,6 +33,7 @@
 
 
     </androidx.camera.view.PreviewView>
+
 
     <com.nexysquare.ddoyac.textdetection.others.GraphicOverlay
         android:id="@+id/graphics_overlay_ocr"
@@ -230,8 +233,18 @@
                     android:layout_width="40dp"
                     android:visibility="visible"
                     android:layout_height="40dp"/>
+
+
+                <ImageView
+                    android:layout_marginStart="@dimen/view_spacing"
+                    android:id="@+id/extract_color_img"
+                    android:layout_width="25dp"
+
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"/>
                 <TextView
 
+                    android:visibility="gone"
                     android:text=""
                     android:textColor="@color/darker_gray"
                     android:id="@+id/extract_color_info_txt"
@@ -322,16 +335,16 @@
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@id/capture_btn">
 
+
                 <ImageView
-                    android:layout_marginStart="@dimen/view_spacing"
-                    android:id="@+id/extract_color_img"
-                    android:layout_width="30dp"
-
-                    android:layout_height="30dp"
+                    android:src="@drawable/ic_detection_recognition_img"
+                    android:id="@+id/cropImg"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/view_margin_spacing" />
+                    android:layout_width="80dp"
+                    android:layout_margin="@dimen/view_margin_spacing"
+                    android:layout_height="wrap_content"/>
 
-<!--                <ImageView-->
+                <!--                <ImageView-->
 <!--                    android:id="@+id/extract_color_img"-->
 <!--                    android:layout_width="30dp"-->
 
@@ -343,13 +356,25 @@
                 android:layout_toStartOf="@id/capture_btn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <ImageView
-                    android:id="@+id/cropImg"
+
+
+                <ImageButton
+
+                    android:tint="@color/darker_gray"
+                    android:id="@+id/img_lib_btn"
+
                     android:layout_gravity="center"
-                    android:layout_centerVertical="true"
-                    android:layout_width="80dp"
-                    android:layout_margin="@dimen/view_margin_spacing"
-                    android:layout_height="wrap_content"/>
+
+
+
+
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_photo_library"
+
+                    android:layout_width="50dp"
+                    android:visibility="visible"
+                    android:layout_height="50dp"/>
+
             </FrameLayout>
 
         </RelativeLayout>

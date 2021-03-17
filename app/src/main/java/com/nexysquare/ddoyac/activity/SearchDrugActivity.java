@@ -115,7 +115,6 @@ public class SearchDrugActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Bitmap comparedBitmap;
 
-
     ArrayList<String> filter_colors = new ArrayList<>();
     ArrayList<String> filter_shapes = new ArrayList<>();
 
@@ -133,6 +132,7 @@ public class SearchDrugActivity extends AppCompatActivity {
 
     public static void open(Context context) {
         Intent intent = new Intent(context, SearchDrugActivity.class);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

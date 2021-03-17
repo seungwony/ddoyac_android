@@ -196,6 +196,8 @@ public class SearchFilterActivity extends AppCompatActivity implements View.OnCl
             }
         });
 
+        showIntuitionColorPicker();
+
         ArrayList<String> colors = getIntent().getStringArrayListExtra("colors");
 
         if(colors!=null){

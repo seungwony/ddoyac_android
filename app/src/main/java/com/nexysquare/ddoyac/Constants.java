@@ -7,7 +7,7 @@ import com.nexysquare.ddoyac.R;
 import java.util.ArrayList;
 
 public class Constants {
-
+    public static final String MODEL_PATH = "last-fp16.tflite";
 
 
     final public static int FLASH_ON = 12345;

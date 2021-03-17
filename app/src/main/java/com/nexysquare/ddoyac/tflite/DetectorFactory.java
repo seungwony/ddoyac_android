@@ -30,6 +30,11 @@ public class DetectorFactory {
             isQuantized = false;
             inputSize = 224;
         }
+        else if (modelFilename.equals("last-fp16.tflite")) {
+            labelFilename = "file:///android_asset/drugscan.txt";
+            isQuantized = false;
+            inputSize = 256;
+        }
 
 
         return YoloV5Classifier.create(assetManager, modelFilename, labelFilename, isQuantized,

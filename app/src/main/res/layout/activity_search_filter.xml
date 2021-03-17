@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:background="@color/app_basic_bg"
     android:layout_height="match_parent">
     <LinearLayout
 
@@ -265,10 +266,15 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-    <RelativeLayout
 
+    <RelativeLayout
+        android:background="@color/white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -278,6 +284,7 @@
             android:background="@color/bright_gray"
             android:layout_width="match_parent"
             android:layout_height="1px"/>
+
         <Button
             android:id="@+id/reset_filter_btn"
             android:text="Reset"
@@ -287,6 +294,7 @@
             android:layout_marginStart="@dimen/view_margin_spacing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/apply_filter_btn"
             android:text="필터 적용"
@@ -295,6 +303,7 @@
             android:layout_marginEnd="@dimen/view_margin_spacing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
