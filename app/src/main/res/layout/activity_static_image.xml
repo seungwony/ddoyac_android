@@ -269,7 +269,7 @@
 
             <Button
                 android:layout_marginStart="@dimen/view_spacing"
-                android:text="OCR로 검색"
+                android:text="이미지로 검색"
                 android:id="@+id/img_search_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
