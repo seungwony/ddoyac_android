@@ -81,8 +81,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
 
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
-
-
+    implementation platform('com.google.firebase:firebase-bom:26.7.0')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 
     /** CameraX */
     def camerax_version = "1.0.0-beta07"
@@ -96,3 +97,4 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha14"
 }
 apply plugin: 'realm-android'
+apply plugin: 'com.google.firebase.crashlytics'
