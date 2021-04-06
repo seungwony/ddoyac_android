@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Constants {
     public static final String MODEL_PATH = "last-fp16.tflite";
-
+    public static final String DATABASE_NAME = "SavedDrug.db";
 
     final public static int FLASH_ON = 12345;
     final public static int FLASH_OFF = 23456;

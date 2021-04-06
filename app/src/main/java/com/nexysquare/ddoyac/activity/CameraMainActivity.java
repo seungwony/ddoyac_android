@@ -33,15 +33,19 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.text.InputFilter;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
@@ -83,6 +87,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.common.util.concurrent.ListenableFuture;
 //import com.google.firebase.ml.vision.FirebaseVision;
 //import com.google.firebase.ml.vision.common.FirebaseVisionImage;
@@ -94,8 +99,10 @@ import com.google.mlkit.vision.text.TextRecognizer;
 
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
+import com.nexysquare.ddoyac.adapter.SavedAdapter;
 import com.nexysquare.ddoyac.env.ImageUtils;
 import com.nexysquare.ddoyac.model.DrugParcelable;
+import com.nexysquare.ddoyac.model.SavedModel;
 import com.nexysquare.ddoyac.tflite.DetectorFactory;
 import com.nexysquare.ddoyac.tflite.YoloV5Classifier;
 import com.nexysquare.ddoyac.util.BitmapUtil;
@@ -107,9 +114,15 @@ import com.nexysquare.ddoyac.textdetection.TextGraphic;
 import com.nexysquare.ddoyac.textdetection.others.GraphicOverlay;
 import com.nexysquare.ddoyac.tflite.Classifier;
 import com.nexysquare.ddoyac.tracking.MultiBoxTracker;
+import com.nexysquare.ddoyac.util.DateUtil;
 import com.nexysquare.ddoyac.util.ImageConversionUtil;
 import com.nexysquare.ddoyac.util.LabelHelper;
+import com.nexysquare.ddoyac.util.SavedDatabaseHelper;
+import com.nexysquare.ddoyac.util.Utils;
 import com.nexysquare.ddoyac.view.ColorCircleDrawable;
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.OnDismissListener;
+import com.orhanobut.dialogplus.ViewHolder;
 import com.yalantis.ucrop.UCrop;
 
 import org.tensorflow.lite.gpu.CompatibilityList;
@@ -125,6 +138,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -206,7 +220,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
     private TextView shape_info_txt, extract_color_info_txt, search_type_text, warning_msg;
 
-    private Button search_ocr_btn, search_img_btn;
+    private Button search_ocr_btn, search_img_btn, saved_list_btn;
 
     FancyShowCaseView searchFancyShowcaseView;
     private View search_expanded_box;
@@ -218,21 +232,8 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
      * Responsible for converting the rotation degrees from CameraX into the one compatible with Firebase ML
      */
 
-//    private int degreesToFirebaseRotation(int degrees) {
-//        switch (degrees) {
-//            case 0:
-//                return FirebaseVisionImageMetadata.ROTATION_0;
-//            case 90:
-//                return FirebaseVisionImageMetadata.ROTATION_90;
-//            case 180:
-//                return FirebaseVisionImageMetadata.ROTATION_180;
-//            case 270:
-//                return FirebaseVisionImageMetadata.ROTATION_270;
-//            default:
-//                throw new IllegalArgumentException(
-//                        "Rotation must be 0, 90, 180, or 270.");
-//        }
-//    }
+    private DialogPlus bottomDialog;
+    private ArrayList<SavedModel> savedModels = new ArrayList<>();
     public static void open(Context context) {
         Intent intent = new Intent(context, CameraMainActivity.class);
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -278,6 +279,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         search_ocr_btn = findViewById(R.id.search_ocr_btn);
         search_img_btn = findViewById(R.id.search_img_btn);
 
+        saved_list_btn = findViewById(R.id.log_btn);
         ImageButton img_lib_btn = findViewById(R.id.img_lib_btn);
         ImageButton more_btn = findViewById(R.id.more_btn);
         ImageButton light_btn= findViewById(R.id.light_btn);
@@ -299,7 +301,8 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         cropImg = findViewById(R.id.cropImg);
         extract_color_img = findViewById(R.id.extract_color_img);
         surfaceView = findViewById(R.id.overlay);
-        surfaceView.setZOrderOnTop(true);
+//        surfaceView.setZOrderOnTop(true);
+        surfaceView.setZOrderMediaOverlay(true);
         holder = surfaceView.getHolder();
         holder.setFormat(PixelFormat.TRANSPARENT);
         holder.addCallback(this);
@@ -321,6 +324,7 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
         extract_color_info_txt.setOnClickListener(this);
         img_lib_btn.setOnClickListener(this);
         extract_color_img.setOnClickListener(this);
+        saved_list_btn.setOnClickListener(this);
 //        search_cardview.setOnClickListener(this);
 
         extract_color_img.setOnLongClickListener(new View.OnLongClickListener() {
@@ -544,10 +548,33 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                         Glide.with(getApplicationContext()).load(R.drawable.showcase3).into(showcase_img);
                     }
                 })
+                .build();
+
+        FancyShowCaseView savedListFancyShowcaseView = new FancyShowCaseView.Builder(this)
+                .focusOn(saved_list_btn)
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .roundRectRadius(90)
+                .title(getString(R.string.showcase_saved_list))
+                .customView(R.layout.view_showcase, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(View view) {
+                        View root_view = view.findViewById(R.id.root_view);
+                        root_view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                queue.getCurrent().hide();
+                            }
+                        });
+                        TextView showcase_text = view.findViewById(R.id.showcase_text);
+                        showcase_text.setText(getString(R.string.showcase_saved_list));
+
+                        ImageView showcase_img = view.findViewById(R.id.showcase_img);
+                        Glide.with(getApplicationContext()).load(R.drawable.showcase4).into(showcase_img);
+                    }
+                })
                 .dismissListener(new DismissListener() {
                     @Override
                     public void onDismiss(String s) {
-//                        Log.d(TAG, "dismiss "+ s );
                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("has_shown_showcase", true).apply();
                     }
 
@@ -559,11 +586,10 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                 .build();
 
 
-
-
         queue.add(ocrFancyShowcaseView);
         queue.add(searchFancyShowcaseView);
         queue.add(imageFancyShowcaseView);
+        queue.add(savedListFancyShowcaseView);
 
         queue.show();
     }
@@ -1123,7 +1149,9 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 //                                ■, ●, ■■■, ETC
 
+
                                     result.setTitle(LabelHelper.intuitionLabel(str_result));
+//                                    result.setTitle("");
 
                                     mappedRecognitions.add(result);
 
@@ -1513,37 +1541,8 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
 
 
 
-        Log.d("surface", "ratioX: " + ratioX + " ratioY : " + ratioY + " middleX : " + middleX + " middleY : " + middleY );
-        Log.d("surface", "left: " + left + " top : " + top + " right : " + right + " bottom : " + bottom );
-
-
-
         holder.unlockCanvasAndPost(canvas);
 
-
-//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(boxWidth, boxHeight);
-//        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(mCameraView.getWidth(), mCameraView.getHeight());
-//        layoutParams.setMargins(left, top, right, bottom);
-//        layoutParams.leftMargin = xOffset;
-//        layoutParams.topMargin = yOffset;
-
-
-        int finalLeft = left;
-        int finalTop = top;
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(boxWidth, boxHeight);
-////        layoutParams.setMargins(left, top, right, bottom);
-//                layoutParams.leftMargin = finalLeft;
-//                layoutParams.topMargin = finalTop;
-//                graphics_overlay.setLayoutParams(layoutParams);
-//            }
-//        });
-
-//        graphics_overlay.setLayoutParams(layoutParams);
-//        graphics_overlay_ocr.setLayoutParams(layoutParams);
-//        graphics_overlay.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.confirm_test));
 
     }
 
@@ -1904,6 +1903,8 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, PICK_PHOTO_REQUEST_CODE);
+        }else if(v.getId() == R.id.log_btn){
+            showSavedListSheetBottoms();
         }
 
 
@@ -2093,5 +2094,240 @@ public class CameraMainActivity extends AppCompatActivity implements SurfaceHold
                 imageView.setImageBitmap(bm);
             }
         }
+    }
+
+
+
+
+    private void showSavedListSheetBottoms(){
+//        MaterialDialog materialDialog = new MaterialDialog(this, new BottomSheet(LayoutMode.WRAP_CONTENT));
+//        materialDialog.show(()->{
+//
+//
+//        });
+
+        savedModels.clear();
+        SavedDatabaseHelper dbHelper = new SavedDatabaseHelper(getApplicationContext());
+
+        Cursor cursor = null;
+        try {
+            cursor = dbHelper.getAllData();
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    int id = cursor.getInt(cursor.getColumnIndex(SavedDatabaseHelper.COL_1));
+                    int priority = cursor.getInt(cursor.getColumnIndex(SavedDatabaseHelper.COL_2));
+                    String name = cursor.getString(cursor.getColumnIndex(SavedDatabaseHelper.COL_3));
+                    String created = cursor.getString(cursor.getColumnIndex(SavedDatabaseHelper.COL_4));
+
+
+                    SavedModel item = new SavedModel();
+                    item.setId(id);
+                    item.setPriority(priority);
+                    item.setName(name);
+
+                    savedModels.add(item);
+//                item.setCreated(new Date());
+                    Log.d(TAG, "id: " + id + ", name: " + name + ", priority: " + priority);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        SavedAdapter adapter = new SavedAdapter(this, savedModels);
+
+
+        adapter.setOnClickListener(new SavedAdapter.onClickListener() {
+
+            @Override
+            public void onClick(TextView tv, int id, String name) {
+//                SavedDatabaseHelper dbHelper = new SavedDatabaseHelper(getApplicationContext());
+                dbHelper.getAllDrugDataById(id);
+
+                //   contentValues.put("id",id);
+                //        contentValues.put("priority",priority);
+                //        contentValues.put("rel_id",rel_id);
+                //        contentValues.put("created",created);
+                ArrayList<Integer> ids = new ArrayList<>();
+                Cursor cursor = null;
+                try {
+                    cursor = dbHelper.getAllDrugDataById(id);
+                    if (cursor != null) {
+                        while (cursor.moveToNext()) {
+//                            int id = cursor.getInt(cursor.getColumnIndex("id");
+//                            int priority = cursor.getInt(cursor.getColumnIndex("priority)");
+                            int rel_id = cursor.getInt(cursor.getColumnIndex("rel_id"));
+
+                            ids.add(rel_id);
+
+
+                        }
+                    }
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
+
+//                if(ids.size()>0){
+//
+//
+//                }else{
+//                    Toast.makeText(getApplicationContext(), "저장된 정보가 없습니다. 개별 알약 페이지에서 하트를 누르고 저장해보세요.", Toast.LENGTH_SHORT).show();
+//                }
+                SavedDrugActivity.open(CameraMainActivity.this, tv, id, ids, name);
+
+                if(bottomDialog!=null){
+                    bottomDialog.dismiss();
+
+                }
+
+
+
+
+            }
+        });
+
+//        adapter.setOnLongClickListener(new SavedAdapter.onLongClickListener() {
+//            @Override
+//            public void onLongClick(int id) {
+//                SavedDatabaseHelper drugDBHelper = new SavedDatabaseHelper(getApplicationContext());
+//                drugDBHelper.deleteDrugData(id);
+//                Toast.makeText(getApplicationContext(), "저장 목록을 삭제했습니다.", Toast.LENGTH_SHORT).show();
+//
+//                if(bottomDialog!=null){
+//                    bottomDialog.dismiss();
+//
+//                }
+//            }
+//        });
+//        materialDialog.show();
+
+        bottomDialog = DialogPlus.newDialog(this)
+
+                .setAdapter(adapter)
+
+                .setHeader(R.layout.dialog_saved_header)
+
+                .setOnDismissListener(new OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogPlus dialog) {
+                        bottomDialog = null;
+                    }
+                })
+                .setContentBackgroundResource(R.drawable.upper_corner_background)
+                .setGravity(Gravity.BOTTOM)
+                .setCancelable(true)
+                .setExpanded(true)  // This will enable the expand feature, (similar to android L share dialog)
+                .create();
+
+
+        TextView title_txt = bottomDialog.getHeaderView().findViewById(R.id.title_txt);
+
+        Button add_btn = bottomDialog.getHeaderView().findViewById(R.id.add_item_btn);
+
+        title_txt.setText("목록에 저장하기");
+
+        add_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                int i = savedModels.size();
+//                SavedModel item = new SavedModel();
+//                item.setId(i);
+//                item.setPriority(i);
+//                item.setName("알약 #"+String.valueOf(i));
+//                item.setCreated(new Date());
+////                savedModels.add(item);
+//                dbHelper.insertData(i, "알약 #"+String.valueOf(i), "");
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showCreateSavedList();
+                    }
+                }, 500);
+
+
+                bottomDialog.dismiss();
+            }
+        });
+
+        bottomDialog.show();
+
+    }
+    private void showCreateSavedList(){
+        DialogPlus dialog = DialogPlus.newDialog(this)
+
+                .setHeader(R.layout.dialog_header_create_saved_list)
+                .setFooter(R.layout.dialog_footer_create_saved_list)
+                .setContentBackgroundResource(R.drawable.corner_background)
+                .setContentHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setContentWidth(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setContentHolder(new ViewHolder(R.layout.dialog_create_saved_list))
+                .setGravity(Gravity.CENTER)
+
+                .setOnDismissListener(new OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogPlus dialog) {
+//                        Toast.makeText(getApplicationContext(), "dismiss", Toast.LENGTH_SHORT).show();
+
+//                        Utils.hideInputMethod(dialog.getHolderView().findViewById(R.id.name_tf));
+
+//                        Utils.hideKeyboard(getParent());
+                        hideKeyboard();
+
+                    }
+                })
+                .setCancelable(true)
+                .setExpanded(true)  // This will enable the expand feature, (similar to android L share dialog)
+                .create();
+
+
+        InputFilter[] filters = new InputFilter[]{
+                new InputFilter.LengthFilter(10),
+                new InputFilter.AllCaps()
+        };
+        TextInputEditText name_tf = dialog.getHolderView().findViewById(R.id.name_tf);
+        name_tf.setFilters(filters);
+//        name_tf.findFocus();
+        Button add_item_btn = dialog.getFooterView().findViewById(R.id.add_item_btn);
+
+
+        add_item_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(name_tf.getText().length()>1){
+
+                    String name = name_tf.getText().toString();
+
+
+                    SavedDatabaseHelper drugDBHelper = new SavedDatabaseHelper(getApplicationContext());
+
+                    int priority = drugDBHelper.getAllData().getCount();
+                    drugDBHelper.insertData(priority, name, DateUtil.convertedSimpleFormat(new Date()));
+                    Toast.makeText(getApplicationContext(), "["+ name + "] 저장 목록이 만들어졌습니다.", Toast.LENGTH_SHORT).show();
+
+                    dialog.dismiss();
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            showSavedListSheetBottoms();
+                        }
+                    }, 800);
+
+                }
+
+
+            }
+        });
+
+        dialog.show();
+
+    }
+
+    private void hideKeyboard(){
+        Utils.hideKeyboard(this);
     }
 }

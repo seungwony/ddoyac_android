@@ -185,7 +185,7 @@ public class MultiBoxTracker extends GraphicOverlay.Graphic{
                             : String.format("%.2f", (100 * recognition.detectionConfidence));
             //            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.top,
             // labelString);
-            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.top, labelString + "%", boxPaint); // 박스위에 클래스명과 정확도 표시
+            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.bottom, labelString + "%", boxPaint); // 박스위에 클래스명과 정확도 표시
         }
     }
 

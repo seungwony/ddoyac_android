@@ -51,19 +51,35 @@
                 <TextView
                     android:layout_centerVertical="true"
                     android:id="@+id/title_txt"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
+                    android:layout_marginEnd="120dp"
+                    android:lines="1"
+                    android:ellipsize="end"
                     android:textSize="20sp"
                     android:textColor="@color/white"
                     android:text="name"
                     />
 
+
+                <ImageButton
+                    android:layout_toStartOf="@+id/share_btn"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_heart"
+                    android:id="@+id/save_btn"
+                    app:tint="@color/white"
+                    android:padding="@dimen/view_spacing"
+
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
                 <ImageButton
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_content_copy"
+                    android:src="@drawable/ic_share_2"
                     android:id="@+id/share_btn"
+                    android:padding="@dimen/view_spacing"
                     app:tint="@color/white"
                     android:layout_marginEnd="@dimen/view_margin_spacing"
                     android:background="?attr/selectableItemBackground"

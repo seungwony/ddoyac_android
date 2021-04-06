@@ -64,7 +64,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'androidx.preference:preference:1.1.0'
-
+    implementation 'com.orhanobut:dialogplus:1.11@aar'
     implementation 'com.opencsv:opencsv:4.6'
 
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
@@ -74,7 +74,7 @@ dependencies {
     implementation 'com.github.smart-fun:XmlToJson:1.4.5'    // add this line
     implementation "com.squareup.retrofit2:converter-simplexml:2.7.2"
 
-
+    implementation 'com.google.android.material:material:1.3.0'
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.3'
 
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
@@ -84,6 +84,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
+
 
     /** CameraX */
     def camerax_version = "1.0.0-beta07"

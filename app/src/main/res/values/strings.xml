@@ -11,6 +11,10 @@
     <string name="surf">SURF</string>
     <string name="sift">SIFT</string>
 
+
+    <string name="close">CLOSE</string>
+    <string name="confirm">CONFIRM</string>
+
     <string name="Apply">Apply Settings</string>
     <string name="min_dist">Hamming distance between matched descriptors(Lower the more similar):</string>
     <string name="min_dup">Minimum number of good matches to be recognized as a duplicate:</string>
@@ -47,6 +51,7 @@
     <string name="bottom_tab_guide">가이드</string>
     <string name="bottom_tab_ocr">문자 검색</string>
     <string name="bottom_tab_img">이미지 검색</string>
+    <string name="bottom_tab_log">저장 목록</string>
 
 
     <string name="showcase_about_title">또약?</string>
@@ -62,16 +67,29 @@
     <string name="showcase_image_title">이미지 검색</string>
     <string name="showcase_image">&#160;이미지 검색은 캡쳐한 이미지를 특징점을 추출해서 비교해서 비슷한 이미지를 찾아냅니다.\n\n※ 신뢰도는 다소 떨어지더라도 검색하기 어려운 알약 대상으로 비슷한 유형을 검색하고자 할때 사용합니다.</string>
 
+
+    <string name="showcase_saved_list_title">저장 목록</string>
+    <string name="showcase_saved_list">&#160;저장 목록은 알약 정보를 그룹으로 저장하여 별도로 관리하고 공유할 수 있습니다.\n\n※ 개별 알약 디테일 페이지에서 하트 아이콘을 누르면 저장 할 수 있습니다.</string>
+
     <string name="showcase_ocr_button">알약을 피사체로 두면 추출한 글자가 상단 텍스트 박스에 표현됩니다.\n\n* 검색하고자 하면 아래 버튼을 눌러줍니다.</string>
     <string name="showcase_image_button">알약을 피사체로 두면 추출한 이미지가 왼쪽 박스에 표현됩니다.\n\n* 알약의 정면으로 이미지를 추출하면 정확도를 높일 수 있습니다.\n\n* 검색하고자 하면 아래 버튼을 누릅니다.</string>
+
+
+
+
+
 
     <string name="guide_init_user">알약을 정면으로 잡아주세요.</string>
     <string name="close_end">다음부터 보지 않습니다.</string>
     <string name="initializing">잠시만 기다려주십시오.</string>
-    <string name="clipboard_p_name">품목명을 클립보드에 복사했습니다.</string>
+    <string name="clipboard_p_name">클립보드에 복사했습니다.</string>
 
     <string name="off_auto_classification">자동 분류 모드 OFF</string>
 
     <string name="off_auto_shape_classification">모양 자동 분류 OFF</string>
     <string name="off_auto_extract_color">색상 추출 OFF</string>
+
+    <string name="delete_saved_list">
+        <u>목록 삭제하기</u>
+    </string>
 </resources>

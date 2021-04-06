@@ -49,6 +49,26 @@
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        app:hintEnabled="true"
+        android:layout_margin="@dimen/view_spacing"
+        app:hintTextColor="@color/main_pri"
+        android:textColorHint="@color/main_pri"
+        app:boxBackgroundColor="@color/white"
+        android:hint="마크 검색 예) 십자가, 토끼, 하트, AC, ♡"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputEditText
+
+            android:layout_width="match_parent"
+            android:id="@+id/search_tf"
+            android:layout_height="wrap_content"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"

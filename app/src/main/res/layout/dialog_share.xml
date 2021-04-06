@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_marginTop="@dimen/view_margin_spacing"
+            android:layout_marginStart="@dimen/view_margin_spacing"
+            android:text="공유하기"
+            android:textColor="@color/black"
+            android:layout_marginBottom="@dimen/view_margin_spacing"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:background="@drawable/rounded_fill_pri"
+            android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:text="copy"
+            android:id="@+id/copy_content"
+            android:padding="@dimen/view_margin_spacing"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginStart="@dimen/view_margin_spacing"
+            android:layout_marginEnd="@dimen/view_margin_spacing"
+            android:layout_marginBottom="@dimen/view_spacing"
+            android:layout_marginTop="@dimen/view_spacing"
+
+            android:layout_height="wrap_content"/>
+
+
+        <RelativeLayout
+            android:id="@+id/clipboard_btn"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/view_margin_spacing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ic_clipboard"
+                android:layout_width="40dp"
+                android:src="@drawable/ic_content_copy"
+                android:layout_height="40dp"/>
+
+            <TextView
+                android:text="클립보드 복사하기"
+                android:layout_toRightOf="@id/ic_clipboard"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:layout_marginStart="@dimen/view_spacing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+    <View
+        android:background="@color/bright_gray"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <RelativeLayout
+        android:id="@+id/kakaotalk_btn"
+        android:background="?attr/selectableItemBackground"
+        android:padding="@dimen/view_margin_spacing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ic_kakaotalk"
+            android:layout_width="40dp"
+            android:src="@drawable/ic_iconfinder_kakao_talk"
+            android:layout_height="40dp"/>
+
+        <TextView
+            android:text="카카오톡"
+            android:layout_toRightOf="@id/ic_kakaotalk"
+            android:layout_centerVertical="true"
+            android:textSize="18sp"
+            android:layout_marginStart="@dimen/view_spacing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </RelativeLayout>
+    <View
+        android:background="@color/bright_gray"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+    <RelativeLayout
+        android:background="?attr/selectableItemBackground"
+        android:id="@+id/mail_btn"
+        android:padding="@dimen/view_margin_spacing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ic_email"
+            android:layout_width="40dp"
+            android:src="@drawable/ic_mail"
+            android:layout_height="40dp"/>
+
+        <TextView
+            android:text="메일"
+            android:layout_toRightOf="@id/ic_email"
+            android:layout_centerVertical="true"
+            android:textSize="18sp"
+            android:layout_marginStart="@dimen/view_spacing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
+

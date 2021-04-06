@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/view_margin_spacing"
+    android:paddingRight="@dimen/view_margin_spacing"
+    android:paddingTop="@dimen/view_spacing"
+    android:paddingBottom="@dimen/view_spacing">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="footer"
+        android:textSize="12sp"/>
+
+    <Button
+        android:id="@+id/footer_close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/close"
+        android:textColor="@color/d_red"
+        android:textSize="16sp"
+        android:background="?attr/selectableItemBackground" />
+
+    <Button
+        android:id="@+id/footer_confirm_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:background="@drawable/rounded_fill_pri"/>
+
+</LinearLayout>
+

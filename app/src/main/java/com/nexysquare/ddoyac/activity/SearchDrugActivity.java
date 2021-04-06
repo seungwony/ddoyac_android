@@ -1,11 +1,13 @@
 package com.nexysquare.ddoyac.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -32,6 +34,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,6 +54,7 @@ import com.nexysquare.ddoyac.model.DataHelper;
 import com.nexysquare.ddoyac.model.Drug;
 import com.nexysquare.ddoyac.model.DrugParcelable;
 import com.nexysquare.ddoyac.model.FilterBundle;
+import com.nexysquare.ddoyac.model.MarkModel;
 import com.nexysquare.ddoyac.model.MatchedInfo;
 import com.nexysquare.ddoyac.model.Pill;
 import com.nexysquare.ddoyac.model.PillRealm;
@@ -71,11 +76,13 @@ import org.opencv.core.MatOfDMatch;
 import org.opencv.features2d.DescriptorMatcher;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -472,6 +479,20 @@ public class SearchDrugActivity extends AppCompatActivity {
             }
         });
 
+        Button extract_mark_list_btn = findViewById(R.id.extract_mark_list_btn);
+        extract_mark_list_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(permissionGranted()){
+                    extractMarkImg();
+                }else{
+                    requestPermission();
+                }
+
+
+            }
+        });
+
         Button check_count_btn = findViewById(R.id.check_count_btn);
         check_count_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -588,6 +609,207 @@ public class SearchDrugActivity extends AppCompatActivity {
         //타원형
 
         //사각형, 기타, 팔각형, 오각형, 삼각형, 마름모형, 육각형, 반원형
+    }
+
+
+    private void extractMarkImg(){
+
+
+        ArrayList<MarkModel> ss = new ArrayList<>();
+
+//        for (DrugParcelable drug : items){
+//            String mark_img_front = drug.getMark_img_front();
+//            String mark_img_back = drug.getMark_img_back();
+//
+//            String mark_img_des_front = drug.getMark_img_des_front();
+//            String mark_img_des_back = drug.getMark_img_des_back();
+//
+//
+//            if(!mark_img_front.equals("") && !existsMark(ss, mark_img_front)){
+//                ss.add(new MarkModel(mark_img_front, mark_img_des_front ));
+//            }
+//
+//            if(!mark_img_back.equals("") && !existsMark(ss, mark_img_back)){
+//                ss.add(new MarkModel(mark_img_back, mark_img_des_back ));
+//            }
+//
+//        }
+//
+//        String result = "";
+//
+//        for( MarkModel s : ss){
+////            Log.d("MarkModel", s.getImgSrc() + " " + s.getDes());
+//            result += s.getImgSrc() + ", " + s.getDes()+"\n";
+//        }
+//
+//        Log.d("markImg",result);
+
+//        writeFilterList(result);
+
+        extractFilterList();
+    }
+
+
+    private void extractFilterList(){
+        Realm realm = Realm.getInstance(GlobalApp.getRealmConfiguration());
+        RealmResults<Drug> realmResults = realm.where(Drug.class).findAllAsync();
+
+        ArrayList<MarkModel> ss = new ArrayList<>();
+
+        ArrayList<String> mark_list = new ArrayList<>();
+
+        ArrayList<String> color_list = new ArrayList<>();
+        ArrayList<String> shape_list = new ArrayList<>();
+
+
+        for( Drug drug : realmResults){
+
+            String shape = drug.getShape();
+//
+//            String mark_img_back = drug.getMark_img_back();
+
+
+            String color_front = drug.getColor_front();
+            String color_back = drug.getColor_back();
+
+
+            String mark_img_front = drug.getMark_img_front();
+            String mark_img_back = drug.getMark_img_back();
+
+            String mark_img_des_front = drug.getMark_img_des_front();
+            String mark_img_des_back = drug.getMark_img_des_back();
+
+            if(!mark_list.contains(mark_img_front)){
+                mark_list.add(mark_img_front);
+                ss.add(new MarkModel(mark_img_front, mark_img_des_front ));
+            }
+
+            if(!mark_list.contains(mark_img_back)){
+                mark_list.add(mark_img_back);
+                ss.add(new MarkModel(mark_img_back, mark_img_des_back ));
+            }
+
+
+            String[] colorFArr = color_front.split(",");
+            for( String color : colorFArr){
+                if(!color_list.contains(color)){
+
+                    color_list.add(color);
+                }
+            }
+
+
+            String[] colorBArr = color_back.split(",");
+            for( String color : colorBArr){
+                if(!color_list.contains(color)){
+
+                    color_list.add(color);
+                }
+            }
+        }
+
+
+        String result = "";
+
+
+//        result += "=== mark list ===\n";
+//
+//        for(String mark : mark_list){
+//            result += mark + "\n";
+//
+//
+//
+////            chip.
+//        }
+
+
+
+
+        for( MarkModel s : ss){
+//            Log.d("MarkModel", s.getImgSrc() + " " + s.getDes());
+            result += s.getImgSrc() + ", " + s.getDes()+"\n";
+        }
+
+//        result += "\n=== color list ===\n";
+//
+//        for(String color : color_list){
+//
+//            result += color + "\n";
+////            addColorChipView(color_chip_group, color);
+//
+//        }
+
+//        result += "\n=== shape list ===\n";
+//        for(String shape : shape_list){
+//            result += shape + "\n";
+////            addChipView(shape_chip_group, shape);
+//        }
+//
+//
+        Log.d("filter list", result);
+
+        writeFilterList(result);
+    }
+
+    private boolean permissionGranted(){
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+    private void requestPermission(){
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
+    private void writeFilterList(String des){
+        try {
+
+
+            File logs = new File(Environment
+                    .getExternalStorageDirectory()
+                    .getAbsolutePath()
+                    + "/ddoyac/mark_list.txt");
+
+            FileWriter fw;
+            BufferedWriter bw;
+
+            File dir = new File(Environment
+                    .getExternalStorageDirectory()
+                    .getAbsolutePath() + "/ddoyac/");
+            dir.mkdirs();
+
+            logs.createNewFile();
+
+            logs = new File(
+                    Environment
+                            .getExternalStorageDirectory()
+                            .getAbsolutePath()
+                            + "/ddoyac/mark_list.txt");
+
+            fw = new FileWriter(logs, true);
+            bw = new BufferedWriter(fw);
+
+            bw.write(des + "\n");
+            bw.close();
+
+
+
+        } catch (IOException e1) {
+
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+
+        }
+    }
+
+    private boolean existsMark(ArrayList<MarkModel> ss, String find){
+        for (MarkModel mm : ss){
+
+                if(mm.getImgSrc().equals(find)){
+                    return true;
+                }
+
+
+        }
+
+        return false;
     }
 
 

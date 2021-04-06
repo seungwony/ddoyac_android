@@ -167,7 +167,7 @@
 
             <Button
                 android:layout_marginStart="@dimen/view_spacing"
-                android:text="OCR로 검색"
+                android:text="문자로 검색"
                 android:id="@+id/ocr_search_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

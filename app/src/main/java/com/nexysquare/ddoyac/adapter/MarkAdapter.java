@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.nexysquare.ddoyac.R;
+import com.nexysquare.ddoyac.model.MarkModel;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,7 @@ public class MarkAdapter  extends RecyclerView.Adapter<MarkAdapter.ViewHolder>  
     }
 
     private final Context mContext;
-    private final ArrayList<String> mItems;
+    private final ArrayList<MarkModel> mItems;
     private int mCurrentItemId = 0;
 
 
@@ -42,7 +43,7 @@ public class MarkAdapter  extends RecyclerView.Adapter<MarkAdapter.ViewHolder>  
     }
 
 
-    public MarkAdapter(Context context, ArrayList<String> list) {
+    public MarkAdapter(Context context, ArrayList<MarkModel> list) {
 
         mContext = context;
         mItems = list;
@@ -61,18 +62,18 @@ public class MarkAdapter  extends RecyclerView.Adapter<MarkAdapter.ViewHolder>  
 
     @Override
     public void onBindViewHolder(@NonNull MarkAdapter.ViewHolder holder, int position) {
-        final String img = mItems.get(position);
+        final MarkModel markModel = mItems.get(position);
 
 
         Glide.with(mContext)
-                .load(img)
+                .load(markModel.getImgSrc())
                 .centerCrop()
                 .into(holder.img_view);
 
         holder.root_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(clickListener!=null) clickListener.onClick(img);
+                if(clickListener!=null) clickListener.onClick(markModel.getImgSrc());
             }
         });
     }

@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.nexysquare.ddoyac.R;
 import com.nexysquare.ddoyac.model.Drug;
 import com.nexysquare.ddoyac.model.DrugParcelable;
+import com.nexysquare.ddoyac.util.SavedDatabaseHelper;
 
 import java.util.ArrayList;
 
@@ -28,8 +29,6 @@ public class DrugAdapterV2  extends RecyclerView.Adapter<DrugAdapterV2.ViewHolde
 
 
     private onClickListener clickListener;
-
-
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView preview_img;
 
@@ -53,6 +52,8 @@ public class DrugAdapterV2  extends RecyclerView.Adapter<DrugAdapterV2.ViewHolde
 
         mContext = context;
         mItems = list;
+
+
     }
 
     public void setClickListener(onClickListener clickListener) {
@@ -76,6 +77,7 @@ public class DrugAdapterV2  extends RecyclerView.Adapter<DrugAdapterV2.ViewHolde
 
         //noinspection ConstantConditions
         holder.name_txt.setText(p_name);
+        holder.itemView.setTag(obj);
 
 
         String back_mark = obj.getMark_back().equals("") ? "" : " | " + obj.getMark_back();

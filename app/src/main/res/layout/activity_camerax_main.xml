@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -382,13 +383,14 @@
 
         <LinearLayout
             android:layout_gravity="center_horizontal"
-            android:layout_width="340dp"
-            android:weightSum="3"
+            android:layout_width="match_parent"
+            android:weightSum="4"
             android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/guide_btn"
                 android:text="@string/bottom_tab_guide"
+                android:textSize="12sp"
                 android:textColor="@color/searchbox_text_color"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
@@ -400,6 +402,7 @@
                 android:id="@+id/search_ocr_btn"
                 android:text="@string/bottom_tab_ocr"
                 android:layout_width="0dp"
+                android:textSize="12sp"
                 android:layout_weight="1"
                 android:textColor="@color/capture_stroke_inactive"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -410,6 +413,17 @@
                 android:id="@+id/search_img_btn"
                 android:text="@string/bottom_tab_img"
                 android:layout_width="0dp"
+                android:textSize="12sp"
+                android:layout_weight="1"
+                android:textColor="@color/searchbox_text_color"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_height="wrap_content"
+                />
+            <Button
+                android:id="@+id/log_btn"
+                android:text="@string/bottom_tab_log"
+                android:layout_width="0dp"
+                android:textSize="12sp"
                 android:layout_weight="1"
                 android:textColor="@color/searchbox_text_color"
                 android:background="?attr/selectableItemBackgroundBorderless"

@@ -1,9 +1,11 @@
 package com.nexysquare.ddoyac.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
@@ -440,6 +443,8 @@ public class SearchFilterActivity extends AppCompatActivity implements View.OnCl
 
 //        writeFilterList(result);
     }
+
+
     private void addChipView(ChipGroup gp, int idx, String chipText) {
         LayoutInflater layoutInflater = getLayoutInflater();
         Chip chip = (Chip) layoutInflater.inflate(R.layout.row_chip_view, gp, false);

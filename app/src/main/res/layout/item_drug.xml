@@ -34,7 +34,7 @@
                 <ImageView
                     android:transitionName="img_view"
                     android:id="@+id/preview_img"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/placeholder"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
