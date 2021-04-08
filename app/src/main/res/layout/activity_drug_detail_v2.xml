@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/placeholder"
                 app:layout_collapseMode="parallax"
                 app:layout_constraintDimensionRatio="H,13:7"
                 />
